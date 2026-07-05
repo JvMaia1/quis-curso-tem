@@ -36,3 +36,5 @@ Você pode pegar o slug no proprio site do https://www.sp.senac.br, basta acessa
 ```sh
 const unidadesSenac = ['senac-penha', 'senac-sao-miguel-paulista'];
 ```
+
+esse projeto foi desenvolvido por mim e codado com inteligência artificial em 30 minutos
