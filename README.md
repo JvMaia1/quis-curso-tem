@@ -24,6 +24,7 @@ cd quis-curso-tem
 
 # Instale o Playwright
 npm install playwright
+npx playwright install
 
 # Rode o script
 node senac.js
