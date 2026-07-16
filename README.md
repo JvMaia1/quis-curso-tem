@@ -23,7 +23,7 @@ git clone https://github.com/JvMaia1/quis-curso-tem.git
 cd quis-curso-tem
 
 # Instale o Playwright
-npm install playwright
+npm install
 npx playwright install
 
 # Rode o script
