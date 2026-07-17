@@ -1,5 +1,6 @@
 const { chromium } = require('playwright');
 const fs = require('fs'); // Módulo nativo do Node para salvar arquivos
+const { log } = require('console');
 
 // Função de rolagem idêntica à anterior
 async function autoScroll(page) {
@@ -21,7 +22,7 @@ async function autoScroll(page) {
 }
 
 (async () => {
-  const browser = await chromium.launch({ headless: false });
+  const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({
     userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
     viewport: { width: 1280, height: 1000 }
@@ -60,6 +61,8 @@ async function autoScroll(page) {
             .replace(/\b\w/g, (l) => l.toUpperCase());
         };
 
+      const unidadeFormatada = formatarUnidade(unidade)
+
         titles.forEach(titleEl => {
           const titulo = titleEl.innerText ? titleEl.innerText.trim() : '';
           const linkEl = titleEl.closest('a');
@@ -67,7 +70,7 @@ async function autoScroll(page) {
 
           if (titulo !== '' && link !== '' && !link.includes('#a')) {
             listaFiltrada.push({
-              unidade: formatarUnidade(unidadeAtual), // Grava "Senac Penha" limpo
+              unidade: unidadeFormatada,
               curso: titulo,
               link: link
             });
@@ -86,8 +89,10 @@ async function autoScroll(page) {
       await page.close();
     }
   }
+  if (todosOsCursos.length === 0){console.log("Houve um erro, nenhum curso encontrado");
+  }
 
-  // 1. SALVAMENTO SISTÊMICO: Guarda a lista com os links em um arquivo local
+
   fs.writeFileSync('cursos.json', JSON.stringify(todosOsCursos, null, 2));
   console.log('\n[Backup] Todos os 128 cursos (com links) foram salvos em "cursos.json".');
 
