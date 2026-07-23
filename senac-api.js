@@ -225,19 +225,12 @@ async function processarUnidade(unidade) {
             curso: curso.title,
             codigoFT: curso.codigoFT,
             articleId: curso.articleId,
-            dataEfetivaFT: curso.dataEfetivaFT,
             url: curso.url ? `${BASE_URL}${curso.url}` : null,
             imagemURL: curso.imagemURL ? `${BASE_URL}${curso.imagemURL}` : null,
             modalidade: curso.modalidade || [],
             formato: curso.formatos || [],
-            oqueVouAprender: curso.oqueVouAprender || '',
-            comoVouAprender: curso.comoVouAprender || '',
-            possoFazerEsseCurso: curso.possoFazerEsseCurso || '',
-            objetivoComercial: curso.objetivoComercial || '',
             tags: curso.tags || [],
             ofertas: ofertas.map(o => ({
-              codigoOferta: o.detalhes.codigoOferta || '',
-              title: o.title || '',
               dataInicio: o.detalhes.dataInicioOferta || '',
               dataFim: o.detalhes.dataFimOferta || '',
               horarios: o.detalhes.horariosAllOferta || '',
@@ -246,23 +239,12 @@ async function processarUnidade(unidade) {
               totalVagas: o.detalhes.qtdeTotalVagas || '',
               vagasPSG: o.detalhes.qtdeTotalVagasPSG || '',
               dataAberturaBolsa: o.detalhes.dataAberturaBolsaOferta || '',
-              horaAberturaBolsa: o.detalhes.horaAberturaBolsaOferta || '',
-              precoCheio: o.detalhes.precoCheioOferta || '',
               precoVenda: o.detalhes.precoVendaOferta || '',
               precoDesconto: o.detalhes.Text91718406 || '',
-              percentualDesconto: o.detalhes.Text38003677 || '',
               maxParcelas: o.detalhes.numeroMaxParcelasOferta || '',
               valorParcela: o.detalhes.precoVendaMaxParcelaOferta || '',
-              pagamentoCartao: o.detalhes.formaDePagamentoCartaoOferta || '',
-              pagamentoBoleto: o.detalhes.formaDePagamentoBoletoOferta || '',
-              botaoCompra: o.detalhes.botaoCompraOferta || '',
-              vagasCompra: o.detalhes.vagasParaCompraOferta || '',
-              botaoBolsa: o.detalhes.botaoBolsaOferta || '',
-              vagasBolsa: o.detalhes.vagasBolsaOferta || '',
-              etapa: o.detalhes.etapa || '',
               permiteListaEspera: o.detalhes.permiteListaEspera || '',
               dataLimiteMatricula: o.detalhes.dtLimiteMatricula || '',
-              espacoExterno: o.detalhes.espacoExterno || '',
               localEspacoExterno: o.detalhes.localEspacoExterno || '',
             })),
           });
@@ -280,7 +262,6 @@ async function processarUnidade(unidade) {
             curso: curso.title,
             codigoFT: curso.codigoFT,
             articleId: curso.articleId,
-            dataEfetivaFT: curso.dataEfetivaFT,
             url: curso.url ? `${BASE_URL}${curso.url}` : null,
             imagemURL: curso.imagemURL ? `${BASE_URL}${curso.imagemURL}` : null,
             modalidade: curso.modalidade || [],
@@ -315,7 +296,6 @@ async function processarUnidade(unidade) {
   const resultadoFinal = {
     dataExtracao: new Date().toISOString(),
     totalCursos: 0,
-    totalOfertas: 0,
     unidades: [],
   };
 
@@ -326,11 +306,9 @@ async function processarUnidade(unidade) {
         nome: unidade.nome,
         friendlyUrl: unidade.friendlyUrl,
         totalCursos: cursos.length,
-        totalOfertas: cursos.reduce((acc, c) => acc + (c.ofertas || []).length, 0),
         cursos,
       });
       resultadoFinal.totalCursos += cursos.length;
-      resultadoFinal.totalOfertas += cursos.reduce((acc, c) => acc + (c.ofertas || []).length, 0);
     } catch (err) {
       console.error(`❌ Erro fatal ao processar unidade ${unidade.nome}: ${err.message}`);
       resultadoFinal.unidades.push({
@@ -348,5 +326,4 @@ async function processarUnidade(unidade) {
   console.log(`\n\n✅ Extração concluída!`);
   console.log(`   📄 Arquivo salvo: ${outputFile}`);
   console.log(`   📊 Total de cursos: ${resultadoFinal.totalCursos}`);
-  console.log(`   🎯 Total de ofertas/turmas: ${resultadoFinal.totalOfertas}`);
 })();

@@ -3,16 +3,14 @@
 # Dependencias
 Node.js
 
-Playwright
+Axios
 
 # O que faz?
-Realiza um web scraping que extrai quais cursos estão disponíveis no Senac SP (filtrando por vagas para compra ou bolsa de estudo) nas unidades que você escolher.
+Consulta as APIs internas do portal do Senac SP e extrai quais cursos estão disponíveis (filtrando por vagas para compra ou bolsa de estudo) nas unidades que você escolher.
 
-O script simula a rolagem da página para carregar o conteúdo dinâmico, limpa os elementos vazios do layout e gera duas saídas:
+Diferente da abordagem antiga com Playwright, esse script consome os endpoints REST diretamente — sem abrir navegador, sem simular rolagem, sem depender de HTML renderizado. Muito mais rápido e estável.
 
-Um arquivo cursos.json com o backup dos nomes e links.
-
-Uma lista limpa no terminal no formato Unidade: X | Curso: Y, pronta para dar Ctrl+C e jogar em uma LLM (ChatGPT/Gemini) para filtrar o que te interessa.
+A saída é um arquivo `cursos.json` com os cursos encontrados e os detalhes de cada turma: datas, horários, preços, vagas e data de abertura da bolsa.
 
 ##### passo a passo:
 ```sh
@@ -22,20 +20,60 @@ git clone https://github.com/JvMaia1/quis-curso-tem.git
 # Vá até a pasta
 cd quis-curso-tem
 
-# Instale o Playwright
+# Troque para a branch que usa APIs
+git checkout usando-apis
+
+# Instale as dependências
 npm install
-npx playwright install
 
 # Rode o script
-node senac.js
+node senac-api.js
+```
+
+# o que sai no json?
+Cada curso vem com suas turmas (ofertas) e os dados que importam:
+
+```json
+{
+  "dataExtracao": "2026-07-21T12:12:47.917Z",
+  "totalCursos": 179,
+  "unidades": [
+    "nome": "Senac Penha",
+    "totalCursos": 80,
+    "cursos": [
+      "curso": "Excel Avançado",
+      "tema": "Tecnologia da Informação",
+      "url": "https://www.sp.senac.br/...",
+      "modalidade": ["Presencial"],
+      "tags": ["Informática", "Office"],
+      "ofertas": [
+        "dataInicio": "2026-09-11",
+        "dataFim": "2026-12-04",
+        "horarios": "Sex 13h30 às 17h30",
+        "periodoDia": "TA",
+        "totalVagas": "10",
+        "vagasPSG": "6",
+        "dataAberturaBolsa": "2026-08-22",
+        "precoVenda": "960",
+        "maxParcelas": "12"
+      ]
+    ]
+  ]
+}
 ```
 
 # como editar as unidades
 Altere o array inserindo as unidades que você precisa.
 Você pode pegar o slug no proprio site do https://www.sp.senac.br, basta acessar a unidade de sua escolha.
 
-```sh
-const unidadesSenac = ['senac-penha', 'senac-sao-miguel-paulista'];
+```js
+const UNIDADES = [
+  { friendlyUrl: 'senac-penha', nome: 'Senac Penha' },
+  { friendlyUrl: 'senac-sao-miguel-paulista', nome: 'Senac São Miguel Paulista' },
+];
 ```
+
+# documentação da api
+Os endpoints usados e o dicionário de dados do XML estão documentados em [`api_documentacao.md`](api_documentacao.md).
 
 esse projeto foi desenvolvido por mim e codado com inteligência artificial em 30 minutos
