@@ -75,5 +75,3 @@ const UNIDADES = [
 
 # documentação da api
 Os endpoints usados e o dicionário de dados do XML estão documentados em [`api_documentacao.md`](api_documentacao.md).
-
-esse projeto foi desenvolvido por mim e codado com inteligência artificial em 30 minutos
