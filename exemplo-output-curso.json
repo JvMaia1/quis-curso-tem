@@ -1,0 +1,83 @@
+{
+  "dataExtracao": "2026-07-21T12:12:47.917Z",
+  "totalCursos": 186,
+  "totalOfertas": 224,
+  "unidades": [
+    {
+      "nome": "Senac Penha",
+      "friendlyUrl": "senac-penha",
+      "totalCursos": 80,
+      "totalOfertas": 104,
+      "cursos": [
+        {
+          "unidade": "Senac Penha",
+          "unidadeId": 40844,
+          "tema": "Beleza  e Estética",
+          "temaId": 40453,
+          "curso": "Alongamento de Cílios",
+          "codigoFT": 21790,
+          "articleId": "63793",
+          "dataEfetivaFT": "2019-01-01",
+          "url": "https://www.sp.senac.br/cursos-livres/curso-de-alongamento-de-cilios",
+          "imagemURL": "https://www.sp.senac.br/documents/20125/86544648/21790_01-01-2019.webp/d0e1d57a-10bb-620a-0f0f-682b8e2414a4?version=1.0&t=1724680707118&imagePreview=1",
+          "modalidade": [
+            {
+              "name": "Aperfeiçoamento",
+              "categoryId": 33604388
+            }
+          ],
+          "formato": [
+            {
+              "name": "Presencial",
+              "categoryId": 38415503
+            }
+          ],
+          "oqueVouAprender": "\n      <p>- Harmonização do olhar<br />\n- Avaliar e higienizar os cílios de clientes<br />\n- Curvar e alongar os cílios utilizando técnicas de fio a fio e grandes volumes<br />\n- Fazer manutenção e remoção de cílios, de acordo com a técnica de alongamento aplicada<br />\n- Organizar o espaço de trabalho, fazer compras de materiais e armazenar produtos<br />\n- Atender clientes<br />\n- Atuar de acordo com as normas de biossegurança</p>\n    ",
+          "comoVouAprender": "\n      <p>Com aulas práticas e dinâmicas que conectam você às inovações da área, sempre com espaço para tirar dúvidas e trocar experiências.<br />\n<br />\nTambém usará laboratório específico para colocar em prática as técnicas aprendidas durante o curso.<br />\n<br />\nTudo isso para você ficar cada vez mais perto do seu objetivo.<br />\n<br />\nEste é o Jeito Senac de Educar.</p>\n    ",
+          "possoFazerEsseCurso": "\n      <p>Você deve ter, pelo menos, o ensino fundamental 2 incompleto e ser maior de 18 anos.<br />\n<br />\nEste curso é para quem tem facilidade para se relacionar com o público e deseja atuar na área de beleza com cuidados para os cílios.</p>\n    ",
+          "objetivoComercial": "\n      <p>Você aprenderá como curvar e alongar cílios, aplicando técnicas de fio a fio e grandes volumes,&nbsp;para valorizar o olhar de clientes.</p>\n    ",
+          "tags": [
+            "beleza",
+            "alongar cílios",
+            "técnicas fia a fio para cílios",
+            "aumentar cílios",
+            "cuidados com alongamento de cílios",
+            "visagismo",
+            "alongamento de cílios",
+            "técnicas de alongamento de cílios",
+            "cílios fio a fio",
+            "cuidados para os cílios"
+          ],
+          "ofertas": [
+            {
+              "codigoOferta": "9900364708",
+              "title": "Oferta 9900364708 11/09/2026 13:30 - 04/12/2026 17:30",
+              "dataInicio": "2026-09-11",
+              "dataFim": "2026-12-04",
+              "horarios": "Sex 13h30 às 17h30",
+              "diasDaSemana": "SEX",
+              "periodoDia": "TA",
+              "totalVagas": "10",
+              "vagasPSG": "6",
+              "dataAberturaBolsa": "2026-08-22",
+              "horaAberturaBolsa": "12h",
+              "precoCheio": "2581",
+              "precoVenda": "2581",
+              "precoDesconto": "2374.52",
+              "percentualDesconto": "8",
+              "maxParcelas": "12",
+              "valorParcela": "215.08",
+              "pagamentoCartao": "Mastercard, Visa, Elo, American Express em até 12 vezes de R$215.08",
+              "pagamentoBoleto": "Boleto bancário em até 12 vezes de R$215.08",
+              "botaoCompra": "true",
+              "vagasCompra": "true",
+              "botaoBolsa": "true",
+              "vagasBolsa": "true",
+              "etapa": "0010",
+              "permiteListaEspera": "false",
+              "dataLimiteMatricula": "2026-09-11",
+              "espacoExterno": "true",
+              "localEspacoExterno": "Neste curso, todos os encontros são presenciais na unidade do Senac que você escolheu."
+            }
+          ]
+        },
