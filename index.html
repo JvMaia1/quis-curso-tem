@@ -3,30 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard cursos Senac</title>
+    <title>Quis Curso Tem — Senac</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
-        <h1>Cursos disponiveis nos Senac's Penha e São Miguel Paulist</h1>
+        <h1>Quis Curso Tem</h1>
+        <p>Senac Penha e São Miguel Paulista</p>
     </header>
 
     <main>
-        <article>
-            <h2>Cursos Senac Penha</h2>
-                <p>Cursos abertos para bolsas ou proximos de abrir</p>
-                <section>
-                    <h3>Curso xpto</h3>
-                    <p>Horario do curso</p>
-                    <p>Dias da semana</p>
-                    <p>Duração</p>
-                </section>
-        </article>
+        <section id="mapa" aria-label="Mapa das unidades">
+            <div class="placeholder-mapa">
+                <span aria-hidden="true">🗺️</span>
+                <p>Mapa em breve</p>
+            </div>
+        </section>
 
+        <section id="busca" aria-label="Busca de cursos">
+            <input
+                type="search"
+                class="campo-busca"
+                placeholder="Buscar curso, tema, unidade..."
+                disabled
+            >
+        </section>
+
+        <section id="lista-cursos" aria-label="Lista de cursos">
+            <ul id="itens-cursos">
+                <!-- Populado via JavaScript -->
+            </ul>
+        </section>
     </main>
 
-    <footer>
-
-    </footer>
-    
+    <script src="script.js"></script>
 </body>
 </html>
