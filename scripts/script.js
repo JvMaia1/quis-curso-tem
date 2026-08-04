@@ -1,37 +1,57 @@
-(async function () {
     const listaDeCursos = document.getElementById('itens-cursos');
-    const hoje = new Date();
-    hoje.setHours(0, 0, 0, 0);
+    
+    const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
 
-    try {
-        const resposta = await fetch('cursos.json');
-        if (!resposta.ok) {
-            throw new Error(`HTTP ${resposta.status}`);
+    const mapeamento_unidades = {
+        'senac-penha': 'Senac Penha',
+        'senac-sao-miguel-paulista': 'Senac São Miguel Paulista',
+    };
+
+    let cursosCache = [];
+
+    (async function(){
+        
+        try {
+            const resposta = await fetch('cursos.json');
+            
+            if (!resposta.ok) {throw new Error(`HTTP ${resposta.status}`)};
+        
+            const dados = await resposta.json();
+
+            for(const unidade of dados.unidades){
+                for( const curso of unidade.cursos){
+                    cursosCache.push(curso);
+                };
+            };
+        
+            listaDeCursos.innerHTML = '<li class="lista-vazia">Selecione uma unidade</li>';
+
+        } catch (erro) {
+            console.error('Erro ao carregar cursos:', erro);
+            listaDeCursos.innerHTML = '<li class="lista-erro">Erro ao carregar cursos. Tente novamente.</li>';
         }
 
-        const dados = await resposta.json();
+    })(); 
 
-        /* Achata e agrupa cursos por codigoFT (mesmo curso em unidades diferentes vira um card só) */
+    
+/*        Achata e agrupa cursos por codigoFT (mesmo curso em unidades diferentes vira um card só)
         const cursos = [];
         for (const unidade of dados.unidades) {
             for (const curso of unidade.cursos) {
                 cursos.push(curso);
             }
         }
-
+        
         const agrupados = agruparPorCodigo(cursos);
-
         if (agrupados.length === 0) {
             listaDeCursos.innerHTML = '<li class="lista-vazia">Nenhum curso encontrado.</li>';
             return;
         }
-
+        
         montarLista(agrupados, listaDeCursos, hoje);
+        
+        */
 
-    } catch (erro) {
-        console.error('Erro ao carregar cursos:', erro);
-        listaDeCursos.innerHTML = '<li class="lista-erro">Erro ao carregar cursos. Tente novamente.</li>';
-    }
 
     /* ---- Funções ---- */
 
@@ -259,4 +279,3 @@
         const mes = String(data.getMonth() + 1).padStart(2, '0');
         return `${dia}/${mes}`;
     }
-})();

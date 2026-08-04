@@ -65,6 +65,91 @@ header {
     }
 }
 
+/* --- Seleção de unidades --- */
+#selecao-unidades {
+    padding: 0.75rem 1rem;
+    background: var(--cor-branco);
+    border-bottom: 1px solid var(--cor-borda);
+
+    fieldset {
+        border: none;
+    }
+
+    legend {
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--cor-texto-fraco);
+        margin-bottom: 0.45rem;
+    }
+}
+
+.lista-checkboxes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.checkbox-unidade {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.88rem;
+    cursor: pointer;
+    user-select: none;
+
+    /* Esconde input nativo visualmente mas mantém acessível */
+    input[type="checkbox"] {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .marcador-checkbox {
+        width: 1.1rem;
+        height: 1.1rem;
+        border: 2px solid var(--cor-borda-input);
+        border-radius: 3px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.15s, border-color 0.15s;
+    }
+
+    .texto-checkbox {
+        color: var(--cor-texto);
+    }
+
+    /* Estados de interação */
+    &:hover .marcador-checkbox {
+        border-color: var(--cor-primaria);
+    }
+
+    input[type="checkbox"]:focus-visible + .marcador-checkbox {
+        outline: 2px solid var(--cor-primaria-foco);
+        outline-offset: 2px;
+    }
+
+    input[type="checkbox"]:checked + .marcador-checkbox {
+        background: var(--cor-primaria);
+        border-color: var(--cor-primaria);
+
+        /* Checkmark com CSS */
+        &::after {
+            content: "";
+            display: block;
+            width: 0.3rem;
+            height: 0.55rem;
+            border: solid var(--cor-branco);
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg) translateY(-1px);
+        }
+    }
+}
+
 /* --- Mapa --- */
 #mapa {
     background: color-mix(in srgb, var(--cor-texto-fraco) 15%, var(--cor-branco));

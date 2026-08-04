@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quis Curso Tem — Senac</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <header>
@@ -13,6 +13,25 @@
     </header>
 
     <main>
+        <section id="selecao-unidades" aria-label="Seleção de unidades">
+            <fieldset>
+                <legend>Unidades</legend>
+                <div class="lista-checkboxes" id="lista-checkboxes">
+                    <label class="checkbox-unidade">
+                        <input type="checkbox" value="senac-penha" data-nome="Senac Penha">
+                        <span class="marcador-checkbox" aria-hidden="true"></span>
+                        <span class="texto-checkbox">Senac Penha</span>
+                    </label>
+
+                    <label class="checkbox-unidade">
+                        <input type="checkbox" value="senac-sao-miguel-paulista" data-nome="Senac São Miguel Paulista">
+                        <span class="marcador-checkbox" aria-hidden="true"></span>
+                        <span class="texto-checkbox">Senac São Miguel Paulista</span>
+                    </label>
+                </div>
+            </fieldset>
+        </section>
+
         <section id="mapa" aria-label="Mapa das unidades">
             <div class="placeholder-mapa">
                 <span aria-hidden="true">🗺️</span>
@@ -36,6 +55,9 @@
         </section>
     </main>
 
-    <script src="script.js"></script>
+
+    <script src="scripts/script.js"></script>
+    <script src="scripts/selecao.js"></script>
+
 </body>
 </html>

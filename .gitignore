@@ -1,2 +1,10 @@
 node_modules/
-cursos.json
+docs/agents.md
+docs/MEMORY.md
+docs/user-decisions.md
+docs/ideias.md
+docs/plano.txt
+.agents/
+.claude/
+docs/Screenshot_1.png
+package-lock.json
