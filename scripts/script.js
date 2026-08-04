@@ -43,19 +43,19 @@
         cb.addEventListener('change', () => {
             idsUnidades = coletarUnidadesSelecionadas();
             unidadesSelecionadas = converterUrlsEmNomes(idsUnidades);
-            renderizarCursos(unidadesSelecionadas, cursosEmCache)
+            renderizarCursos(unidadesSelecionadas, cursosEmCache);
             
         });
     });
     
     function coletarUnidadesSelecionadas(){
-        const unidadesSelecionadas = document.querySelectorAll("#lista-checkboxes input[type='checkbox']:checked")
+        const unidadesSelecionadas = document.querySelectorAll("#lista-checkboxes input[type='checkbox']:checked");
         return Array.from(unidadesSelecionadas).map(cb => cb.value);
     };
 
-
     function renderizarCursos(unidadesSelecionadas, cursos){
-        if(!idsUnidades || idsUnidades.length === 0){
+
+        if(!unidadesSelecionadas || iunidadesSelecionadas.length === 0){
             listaDeCursos.innerHTML = '<li class="lista-vazia">Selecione uma unidade</li>';  
             return
         } else {
@@ -65,7 +65,7 @@
         if (unidadesSelecionadas && unidadesSelecionadas.length > 0){
             let listaCursosFiltrada = filtrarCursosUnSelecionadas(unidadesSelecionadas, cursos);
             let listaFinalProcessada = agruparPorCodigo(listaCursosFiltrada);
-            montarLista(listaFinalProcessada, listaDeCursos, hoje)
+            montarLista(listaFinalProcessada, listaDeCursos, hoje);
         }
     };
 
@@ -76,7 +76,7 @@
     function converterUrlsEmNomes(idsUnidades){
         
         if(!idsUnidades || idsUnidades.length === 0){
-            listaDeCursos.innerHTML = '<li class="lista-vazia">Selecione uma unidade</li>';  
+            return
         } else {
             return idsUnidades.map(id => mapeamento_unidades[id]); //transforma cada id no nome da unidade em si atraves do mapamento
         };
