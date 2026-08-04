@@ -7,41 +7,70 @@
         'senac-sao-miguel-paulista': 'Senac São Miguel Paulista',
     };
 
-    let cursosEmCache = [];
-    let unidadesSelecionadas = converterUrlsEmNomes();
-    
-    function renderizarCursos(cursosFiltrados){
-        cursosFiltrados = filtrarCursosUnSelecionadas(cursosEmCache);
-        cursosFiltrados = agruparPorCodigo(cursosFiltrados);
-    };
-    
+    let idsUnidades;
 
+    let cursosEmCache = [];
+    
+    let unidadesSelecionadas = []; // deve receber o id das unidades selecionadas
+    
+    const checkboxes = document.querySelectorAll('#lista-checkboxes input[type="checkbox"]');
+    
     (async function(){
         
         try {
             const resposta = await fetch('cursos.json');
             
             if (!resposta.ok) {throw new Error(`HTTP ${resposta.status}`)};
-        
+            
             const dados = await resposta.json();
-
+            
             for(const unidade of dados.unidades){
                 for( const curso of unidade.cursos){
-                    cursosCache.push(curso);
+                    cursosEmCache.push(curso);
                 };
             };
-        
+            
             listaDeCursos.innerHTML = '<li class="lista-vazia">Selecione uma unidade</li>';
-
+            
         } catch (erro) {
             console.error('Erro ao carregar cursos:', erro);
             listaDeCursos.innerHTML = '<li class="lista-erro">Erro ao carregar cursos. Tente novamente.</li>';
         }
-
+        
     })();
+    
+    checkboxes.forEach(cb => {
+        cb.addEventListener('change', () => {
+            idsUnidades = coletarUnidadesSelecionadas();
+            unidadesSelecionadas = converterUrlsEmNomes(idsUnidades);
+            renderizarCursos(unidadesSelecionadas, cursosEmCache)
+            
+        });
+    });
+    
+    function coletarUnidadesSelecionadas(){
+        const unidadesSelecionadas = document.querySelectorAll("#lista-checkboxes input[type='checkbox']:checked")
+        return Array.from(unidadesSelecionadas).map(cb => cb.value);
+    };
 
-    function filtrarCursosUnSelecionadas(cursosEmCache){
-        return cursosEmCache.filter(curso => unidadesSelecionadas.includes(curso.nome)) //confere se no cache de cursos tem a unidade selecionada, se nao, a remove
+
+    function renderizarCursos(unidadesSelecionadas, cursos){
+        if(!idsUnidades || idsUnidades.length === 0){
+            listaDeCursos.innerHTML = '<li class="lista-vazia">Selecione uma unidade</li>';  
+            return
+        } else {
+            listaDeCursos.innerHTML = ''; 
+        };
+
+        if (unidadesSelecionadas && unidadesSelecionadas.length > 0){
+            let listaCursosFiltrada = filtrarCursosUnSelecionadas(unidadesSelecionadas, cursos);
+            let listaFinalProcessada = agruparPorCodigo(listaCursosFiltrada);
+            montarLista(listaFinalProcessada, listaDeCursos, hoje)
+        }
+    };
+
+    function filtrarCursosUnSelecionadas(unidades, cursos){
+        return cursos.filter(curso => unidades.includes(curso.unidade)) //confere se no cache de cursos tem a unidade selecionada, se nao, a remove
     };
 
     function converterUrlsEmNomes(idsUnidades){
