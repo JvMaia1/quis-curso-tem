@@ -4,6 +4,8 @@ Busca bolsas de estudo e cursos livres do Senac SP filtrando por unidade.
 
 Consome a API REST interna do portal Senac (Liferay) — sem navegador, sem scraping.
 
+## Kanban do projeto
+- https://trello.com/invite/b/6a6e18b6b11207994c4f4173/ATTI43496975d463750c318d9a724eab32108805D1E5/quis-curso-tem
 ## Stack
 
 - **Extração:** Node.js + Axios (consumo de API REST + parse XML)

@@ -73,10 +73,14 @@
         return cursos.filter(curso => unidades.includes(curso.unidade)) //confere se no cache de cursos tem a unidade selecionada, se nao, a remove
     };
 
+    function filtrarCursosUnSelecionadas(cursosEmCache){
+        return cursosEmCache.filter(curso => unidadesSelecionadas.includes(curso.nome)) //confere se no cache de cursos tem a unidade selecionada, se nao, a remove
+    };
+
     function converterUrlsEmNomes(idsUnidades){
         
         if(!idsUnidades || idsUnidades.length === 0){
-            return
+            listaDeCursos.innerHTML = '<li class="lista-vazia">Selecione uma unidade</li>';  
         } else {
             return idsUnidades.map(id => mapeamento_unidades[id]); //transforma cada id no nome da unidade em si atraves do mapamento
         };
