@@ -7,7 +7,14 @@
         'senac-sao-miguel-paulista': 'Senac São Miguel Paulista',
     };
 
-    let cursosCache = [];
+    let cursosEmCache = [];
+    let unidadesSelecionadas = converterUrlsEmNomes();
+    
+    function renderizarCursos(cursosFiltrados){
+        cursosFiltrados = filtrarCursosUnSelecionadas(cursosEmCache);
+        cursosFiltrados = agruparPorCodigo(cursosFiltrados);
+    };
+    
 
     (async function(){
         
@@ -33,6 +40,18 @@
 
     })();
 
+    function filtrarCursosUnSelecionadas(cursosEmCache){
+        return cursosEmCache.filter(curso => unidadesSelecionadas.includes(curso.nome)) //confere se no cache de cursos tem a unidade selecionada, se nao, a remove
+    };
+
+    function converterUrlsEmNomes(idsUnidades){
+        
+        if(!idsUnidades || idsUnidades.length === 0){
+            listaDeCursos.innerHTML = '<li class="lista-vazia">Selecione uma unidade</li>';  
+        } else {
+            return idsUnidades.map(id => mapeamento_unidades[id]); //transforma cada id no nome da unidade em si atraves do mapamento
+        };
+    };
 
     /* ---- Funções ---- */
 
