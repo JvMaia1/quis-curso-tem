@@ -1,4 +1,12 @@
 {
+  "name": "quis-curso-tem",
+  "version": "0.1.0",
+  "description": "Busca bolsas de estudo do Senac SP por unidade",
+  "private": true,
+  "scripts": {
+    "dados": "node legacy/senac-api.js",
+    "dados:dev": "node scripts/cursos.js --dry-run"
+  },
   "dependencies": {
     "axios": "^1.18.1",
     "playwright": "^1.61.1"

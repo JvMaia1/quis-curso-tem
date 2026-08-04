@@ -3,30 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard cursos Senac</title>
+    <title>Quis Curso Tem — Senac</title>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <header>
-        <h1>Cursos disponiveis nos Senac's Penha e São Miguel Paulist</h1>
+        <h1>Quis Curso Tem</h1>
+        <p>Senac Penha e São Miguel Paulista</p>
     </header>
 
     <main>
-        <article>
-            <h2>Cursos Senac Penha</h2>
-                <p>Cursos abertos para bolsas ou proximos de abrir</p>
-                <section>
-                    <h3>Curso xpto</h3>
-                    <p>Horario do curso</p>
-                    <p>Dias da semana</p>
-                    <p>Duração</p>
-                </section>
-        </article>
+        <section id="selecao-unidades" aria-label="Seleção de unidades">
+            <fieldset>
+                <legend>Unidades</legend>
+                <div class="lista-checkboxes" id="lista-checkboxes">
+                    <label class="checkbox-unidade">
+                        <input type="checkbox" value="senac-penha" data-nome="Senac Penha">
+                        <span class="marcador-checkbox" aria-hidden="true"></span>
+                        <span class="texto-checkbox">Senac Penha</span>
+                    </label>
 
+                    <label class="checkbox-unidade">
+                        <input type="checkbox" value="senac-sao-miguel-paulista" data-nome="Senac São Miguel Paulista">
+                        <span class="marcador-checkbox" aria-hidden="true"></span>
+                        <span class="texto-checkbox">Senac São Miguel Paulista</span>
+                    </label>
+                </div>
+            </fieldset>
+        </section>
+
+        <section id="mapa" aria-label="Mapa das unidades">
+            <div class="placeholder-mapa">
+                <span aria-hidden="true">🗺️</span>
+                <p>Mapa em breve</p>
+            </div>
+        </section>
+
+        <section id="busca" aria-label="Busca de cursos">
+            <input
+                type="search"
+                class="campo-busca"
+                placeholder="Buscar curso, tema, unidade..."
+                disabled
+            >
+        </section>
+
+        <section id="lista-cursos" aria-label="Lista de cursos">
+            <ul id="itens-cursos">
+                <!-- Populado via JavaScript -->
+            </ul>
+        </section>
     </main>
 
-    <footer>
 
-    </footer>
-    
+    <script src="scripts/script.js"></script>
+    <script src="scripts/selecao.js"></script>
+
 </body>
 </html>

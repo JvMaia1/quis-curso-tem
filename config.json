@@ -1,0 +1,25 @@
+{
+  "unidades": [
+    { "friendlyUrl": "senac-penha", "nome": "Senac Penha" },
+    { "friendlyUrl": "senac-sao-miguel-paulista", "nome": "Senac São Miguel Paulista" }
+  ],
+  "tipoCurso": "Livre",
+  "filtros": {
+    "temInscricoesAbertas": true,
+    "temBolsaEstudo": true
+  },
+  "api": {
+    "_docs": {
+      "groupId": "ID do grupo/site do Senac SP dentro da plataforma Liferay",
+      "companyId": "ID da empresa/instância Senac dentro da plataforma Liferay",
+      "vocabularyId": "ID do vocabulário 'Área / Tema Mercadológico' que categoriza os cursos"
+    },
+    "baseUrl": "https://www.sp.senac.br",
+    "groupId": "20125",
+    "companyId": "20102",
+    "vocabularyId": "40393",
+    "timeoutMs": 30000,
+    "delayEntreTemasMs": 300,
+    "delayEntreOfertasMs": 100
+  }
+}

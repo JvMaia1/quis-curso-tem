@@ -1,77 +1,110 @@
-# Quis curso tem
+# Quis Curso Tem
 
-# Dependencias
-Node.js
+Busca bolsas de estudo e cursos livres do Senac SP filtrando por unidade.
 
-Axios
+Consome a API REST interna do portal Senac (Liferay) — sem navegador, sem scraping.
 
-# O que faz?
-Consulta as APIs internas do portal do Senac SP e extrai quais cursos estão disponíveis (filtrando por vagas para compra ou bolsa de estudo) nas unidades que você escolher.
+## Stack
 
-Diferente da abordagem antiga com Playwright, esse script consome os endpoints REST diretamente — sem abrir navegador, sem simular rolagem, sem depender de HTML renderizado. Muito mais rápido e estável.
+- **Extração:** Node.js + Axios (consumo de API REST + parse XML)
+- **Frontend:** Vanilla JS (mobile-first, `DocumentFragment`, sem framework)
+- **Mapa:** Leaflet (planejado — MAP-01)
 
-A saída é um arquivo `cursos.json` com os cursos encontrados e os detalhes de cada turma: datas, horários, preços, vagas e data de abertura da bolsa.
+## Estrutura
 
-##### passo a passo:
-```sh
-# Clone o repositório
-git clone https://github.com/JvMaia1/quis-curso-tem.git
-
-# Vá até a pasta
-cd quis-curso-tem
-
-# Troque para a branch que usa APIs
-git checkout usando-apis
-
-# Instale as dependências
-npm install
-
-# Rode o script
-node senac-api.js
+```
+.
+├── index.html              # Frontend SPA
+├── css/styles.css          # Estilos mobile-first
+├── scripts/
+│   ├── script.js           # JS de Dados — fetch, cache, renderização
+│   ├── selecao.js          # JS de UI — checkboxes de unidade
+│   └── cursos.js           # Extrator (WIP — reescrita do legado)
+├── legacy/
+│   ├── senac-api.js        # Extrator funcional (referência)
+│   ├── scout-api.js        # Playwright page inspector (obsoleto)
+│   └── senac.js            # Playwright scraper (obsoleto)
+├── docs/
+│   ├── api_documentacao.md # Documentação dos endpoints do Senac
+│   └── exemplo-output-curso.json
+├── config.json             # Unidades, filtros e parâmetros da API
+└── package.json
 ```
 
-# o que sai no json?
-Cada curso vem com suas turmas (ofertas) e os dados que importam:
+## Uso
+
+```sh
+# Instalar dependências
+npm install
+
+# Extrair dados das unidades configuradas → cursos.json
+npm run dados
+
+# Abrir index.html no navegador (ou servir com qualquer static server)
+python3 -m http.server 8080
+```
+
+## Configuração
+
+Editar `config.json` para alterar unidades ou filtros:
 
 ```json
 {
-  "dataExtracao": "2026-07-21T12:12:47.917Z",
-  "totalCursos": 179,
   "unidades": [
-    "nome": "Senac Penha",
-    "totalCursos": 80,
-    "cursos": [
-      "curso": "Excel Avançado",
-      "tema": "Tecnologia da Informação",
-      "url": "https://www.sp.senac.br/...",
-      "modalidade": ["Presencial"],
-      "tags": ["Informática", "Office"],
-      "ofertas": [
-        "dataInicio": "2026-09-11",
-        "dataFim": "2026-12-04",
-        "horarios": "Sex 13h30 às 17h30",
-        "periodoDia": "TA",
-        "totalVagas": "10",
-        "vagasPSG": "6",
-        "dataAberturaBolsa": "2026-08-22",
-        "precoVenda": "960",
-        "maxParcelas": "12"
-      ]
-    ]
-  ]
+    { "friendlyUrl": "senac-penha", "nome": "Senac Penha" },
+    { "friendlyUrl": "senac-sao-miguel-paulista", "nome": "Senac São Miguel Paulista" }
+  ],
+  "tipoCurso": "Livre",
+  "filtros": {
+    "temInscricoesAbertas": true,
+    "temBolsaEstudo": true
+  }
 }
 ```
 
-# como editar as unidades
-Altere o array inserindo as unidades que você precisa.
-Você pode pegar o slug no proprio site do https://www.sp.senac.br, basta acessar a unidade de sua escolha.
+## API do Senac SP
 
-```js
-const UNIDADES = [
-  { friendlyUrl: 'senac-penha', nome: 'Senac Penha' },
-  { friendlyUrl: 'senac-sao-miguel-paulista', nome: 'Senac São Miguel Paulista' },
-];
+O portal usa Liferay com endpoints REST não documentados publicamente. O extrator realiza 5 chamadas por curso:
+
+1. `categoriaPorFriendlyURL/{slug}` — ID da unidade
+2. `idTipoCursoPorNome/{groupId}/{nome}` — ID do tipo de curso
+3. `categories?vocabularyIds=...` — lista de áreas/temas
+4. `cursosPorCategoriasComFiltrosBolsaECompra/...` — cursos por categoria
+5. `ofertasPorCategoryIds/{groupId}` — ofertas/turmas (XML)
+
+Detalhes completos em [`docs/api_documentacao.md`](docs/api_documentacao.md).
+
+## Arquitetura da busca
+
+Índice estático pré-gerado (`cursos.json`) carregado no browser. Busca textual com tags (BUS-02) filtra em memória.
+Para escala (50+ unidades), migrar para API server-side — registrado em [TECH-01](https://trello.com/b/vNCkaTsu/quis-curso-tem).
+
+## Schema de saída
+
+```json
+{
+  "dataExtracao": "2026-07-29T21:54:55.448Z",
+  "totalCursos": 170,
+  "unidades": [{
+    "nome": "Senac Penha",
+    "friendlyUrl": "senac-penha",
+    "totalCursos": 76,
+    "cursos": [{
+      "curso": "Excel Avançado",
+      "codigoFT": 21417,
+      "tema": "Tecnologia da Informação",
+      "url": "https://www.sp.senac.br/...",
+      "tags": ["excel", "planilhas"],
+      "ofertas": [{
+        "dataInicio": "2026-09-11",
+        "horarios": "Sex 13h30 às 17h30",
+        "totalVagas": "10",
+        "vagasPSG": "6",
+        "dataAberturaBolsa": "2026-08-22",
+        "precoVenda": "2581",
+        "maxParcelas": "12"
+      }]
+    }]
+  }]
+}
 ```
-
-# documentação da api
-Os endpoints usados e o dicionário de dados do XML estão documentados em [`api_documentacao.md`](api_documentacao.md).
