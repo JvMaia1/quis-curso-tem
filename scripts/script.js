@@ -55,7 +55,7 @@
 
     function renderizarCursos(unidadesSelecionadas, cursos){
 
-        if(!unidadesSelecionadas || iunidadesSelecionadas.length === 0){
+        if(!unidadesSelecionadas || unidadesSelecionadas.length === 0){
             listaDeCursos.innerHTML = '<li class="lista-vazia">Selecione uma unidade</li>';  
             return
         } else {
@@ -73,9 +73,6 @@
         return cursos.filter(curso => unidades.includes(curso.unidade)) //confere se no cache de cursos tem a unidade selecionada, se nao, a remove
     };
 
-    function filtrarCursosUnSelecionadas(cursosEmCache){
-        return cursosEmCache.filter(curso => unidadesSelecionadas.includes(curso.nome)) //confere se no cache de cursos tem a unidade selecionada, se nao, a remove
-    };
 
     function converterUrlsEmNomes(idsUnidades){
         
