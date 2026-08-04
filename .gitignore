@@ -1,10 +1,17 @@
 node_modules/
+package-lock.json
+
+# Dados extraídos — gerados via npm run dados
+cursos.json
+
+# Documentação de sessão — ver memory/
 docs/agents.md
 docs/MEMORY.md
 docs/user-decisions.md
 docs/ideias.md
 docs/plano.txt
+docs/Screenshot_1.png
+
+# Configurações locais do Claude Code
 .agents/
 .claude/
-docs/Screenshot_1.png
-package-lock.json

@@ -31,26 +31,7 @@
             listaDeCursos.innerHTML = '<li class="lista-erro">Erro ao carregar cursos. Tente novamente.</li>';
         }
 
-    })(); 
-
-    
-/*        Achata e agrupa cursos por codigoFT (mesmo curso em unidades diferentes vira um card só)
-        const cursos = [];
-        for (const unidade of dados.unidades) {
-            for (const curso of unidade.cursos) {
-                cursos.push(curso);
-            }
-        }
-        
-        const agrupados = agruparPorCodigo(cursos);
-        if (agrupados.length === 0) {
-            listaDeCursos.innerHTML = '<li class="lista-vazia">Nenhum curso encontrado.</li>';
-            return;
-        }
-        
-        montarLista(agrupados, listaDeCursos, hoje);
-        
-        */
+    })();
 
 
     /* ---- Funções ---- */
