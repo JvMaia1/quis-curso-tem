@@ -91,7 +91,7 @@ header {
     gap: 0.5rem;
 }
 
-.checkbox-unidade {
+.checkbox-filtro {
     display: flex;
     align-items: center;
     gap: 0.45rem;

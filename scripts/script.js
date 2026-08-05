@@ -46,9 +46,27 @@ checkboxes.forEach(cb => {
         idsUnidades = coletarUnidadesSelecionadas();
         unidadesSelecionadas = converterUrlsEmNomes(idsUnidades);
         renderizarCursos(unidadesSelecionadas, cursosEmCache);
-        
+
     });
 });
+
+/* TODO(MAIA): listener do checkbox #apenas-disponiveis — re-renderizar com o
+ * estado atual. Trocar (desmarcar todas as unidades → "Selecione uma unidade",
+ * só muda a filtragem quando há unidades selecionadas). */
+
+function filtroDisponivel(curso, hoje){
+    /* Contrato — filtroDisponivel
+     * Entrada:  curso (grupo pós-agruparPorCodigo, com .ofertas), hoje (Date)
+     * Saída:    boolean — true se inscrição já ABERTA
+     * Regra:    curso tem oferta com dataAberturaBolsa ≤ hoje
+     *           (espelha criarBotaoInscricao: data futura = "Inscrição em DD/MM")
+     *           false se data futura, sem data ou sem ofertas
+     * Testes mentais:
+     *   oferta dataAberturaBolsa="2026-08-01", hoje=2026-08-05 → true
+     *   oferta dataAberturaBolsa="2026-09-01", hoje=2026-08-05 → false
+     *   curso sem ofertas / sem dataAberturaBolsa                  → false
+     */
+}
 
 function coletarUnidadesSelecionadas(){
     const unidadesSelecionadas = document.querySelectorAll("#lista-checkboxes input[type='checkbox']:checked");
@@ -67,6 +85,9 @@ function renderizarCursos(unidadesSelecionadas, cursos){
     if (unidadesSelecionadas && unidadesSelecionadas.length > 0){
         let listaCursosFiltrada = filtrarCursosUnSelecionadas(unidadesSelecionadas, cursos);
         let listaFinalProcessada = agruparPorCodigo(listaCursosFiltrada);
+        /* TODO(MAIA): se #apenas-disponiveis estiver checked, filtrar por disponibilidade
+         * ANTES de montar: listaFinalProcessada = listaFinalProcessada.filter(
+         *     curso => filtroDisponivel(curso, hoje)); */
         montarLista(listaFinalProcessada, listaDeCursos, hoje);
     }
 };
@@ -74,7 +95,6 @@ function renderizarCursos(unidadesSelecionadas, cursos){
 function filtrarCursosUnSelecionadas(unidades, cursos){
     return cursos.filter(curso => unidades.includes(curso.unidade)) //confere se no cache de cursos tem a unidade selecionada, se nao, a remove
 };
-
 
 function converterUrlsEmNomes(idsUnidades){
     
@@ -85,13 +105,6 @@ function converterUrlsEmNomes(idsUnidades){
     };
 };
 
-/* ---- Funções ---- */
-
-/*
-    * Agrupa cursos pelo codigoFT.
-    * Cursos iguais em unidades diferentes viram um só,
-    * com unidades mescladas e ofertas concatenadas.
-    */
 function agruparPorCodigo(cursos) {
     const indice = new Map();
 
