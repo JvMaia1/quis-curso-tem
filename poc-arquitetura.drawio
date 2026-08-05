@@ -1,141 +1,143 @@
-<mxGraphModel adaptiveColors="auto">
-  <root>
-    <mxCell id="0"/>
-    <mxCell id="1" parent="0"/>
-    <mxCell id="title" value="Quis Curso Tem — Arquitetura POC" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=22;fontStyle=1;fontColor=#003a70;" vertex="1" parent="1">
-      <mxGeometry x="200" y="20" width="500" height="40" as="geometry"/>
-    </mxCell>
-    <mxCell id="subtitle" value="Busca de cursos do Senac Penha e São Miguel Paulista com bolsa de estudo" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=11;fontColor=#888888;" vertex="1" parent="1">
-      <mxGeometry x="200" y="55" width="500" height="20" as="geometry"/>
-    </mxCell>
-    <mxCell id="box-apis" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;strokeWidth=2;dashed=1;" vertex="1" parent="1">
-      <mxGeometry x="30" y="95" width="230" height="320" as="geometry"/>
-    </mxCell>
-    <mxCell id="label-apis" value="APIs Liferay (sp.senac.br)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=12;fontStyle=1;fontColor=#1565C0;" vertex="1" parent="1">
-      <mxGeometry x="40" y="100" width="210" height="22" as="geometry"/>
-    </mxCell>
-    <mxCell id="api1" value="&lt;b&gt;API 1&lt;/b&gt; — Unidade&lt;br&gt;categoriaPorFriendlyURL&lt;br&gt;slug → categoryId" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1565C0;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
-      <mxGeometry x="45" y="132" width="200" height="42" as="geometry"/>
-    </mxCell>
-    <mxCell id="api2" value="&lt;b&gt;API 2&lt;/b&gt; — Tipo de Curso&lt;br&gt;idTipoCursoPorNome&lt;br&gt;"Livre" → categoryId" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1565C0;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
-      <mxGeometry x="45" y="182" width="200" height="42" as="geometry"/>
-    </mxCell>
-    <mxCell id="api3" value="&lt;b&gt;API 3&lt;/b&gt; — Temas&lt;br&gt;categories?vocabularyIds&lt;br&gt;Lista de áreas mercadológicas" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1565C0;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
-      <mxGeometry x="45" y="232" width="200" height="42" as="geometry"/>
-    </mxCell>
-    <mxCell id="api4" value="&lt;b&gt;API 4&lt;/b&gt; — Cursos&lt;br&gt;cursosPorCategoriasComFiltros&lt;br&gt;Filtro: inscrição + bolsa" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1565C0;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
-      <mxGeometry x="45" y="282" width="200" height="42" as="geometry"/>
-    </mxCell>
-    <mxCell id="api5" value="&lt;b&gt;API 5&lt;/b&gt; — Ofertas/Turmas&lt;br&gt;ofertasPorCategoryIds&lt;br&gt;XML com horários, preços, vagas" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1565C0;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
-      <mxGeometry x="45" y="332" width="200" height="42" as="geometry"/>
-    </mxCell>
-    <mxCell id="arrow-apis-pipeline" style="endArrow=blockThin;html=1;strokeWidth=3;strokeColor=#1565C0;endFill=1;fontSize=9;" edge="1" parent="1">
-      <mxGeometry relative="1" as="geometry">
-        <mxPoint x="260" y="255" as="sourcePoint"/>
-        <mxPoint x="310" y="255" as="targetPoint"/>
-      </mxGeometry>
-    </mxCell>
-    <mxCell id="box-pipeline" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#E65100;strokeWidth=2;dashed=1;" vertex="1" parent="1">
-      <mxGeometry x="310" y="95" width="290" height="320" as="geometry"/>
-    </mxCell>
-    <mxCell id="label-pipeline" value="Pipeline de Extração (Node.js)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=12;fontStyle=1;fontColor=#E65100;" vertex="1" parent="1">
-      <mxGeometry x="320" y="100" width="270" height="22" as="geometry"/>
-    </mxCell>
-    <mxCell id="script-cursos" value="&lt;b&gt;scripts/cursos.js&lt;/b&gt;&lt;br&gt;Orquestrador principal&lt;br&gt;Itera temas → cursos → ofertas&lt;br&gt;Rate limit: 200ms / 500ms" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
-      <mxGeometry x="325" y="132" width="260" height="52" as="geometry"/>
-    </mxCell>
-    <mxCell id="config" value="&lt;b&gt;config.json&lt;/b&gt;&lt;br&gt;Unidades, groupId, vocabularyId, timeouts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
-      <mxGeometry x="325" y="200" width="260" height="38" as="geometry"/>
-    </mxCell>
-    <mxCell id="scout-legacy" value="&lt;b&gt;legacy/scout-api.js&lt;/b&gt;&lt;br&gt;Scout com Playwright (debug)&lt;br&gt;&lt;b&gt;legacy/senac-api.js&lt;/b&gt;&lt;br&gt;Versão anterior do extrator" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#BDBDBD;fontSize=9;align=left;spacingLeft=8;fontColor=#888888;" vertex="1" parent="1">
-      <mxGeometry x="325" y="254" width="260" height="52" as="geometry"/>
-    </mxCell>
-    <mxCell id="cursos-json" value="&lt;b&gt;cursos.json&lt;/b&gt;&lt;br&gt;JSON estático (~186 cursos)&lt;br&gt;Desacoplado do portal Senac" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#FF8F00;fontSize=9;align=left;spacingLeft=8;fontStyle=1;" vertex="1" parent="1">
-      <mxGeometry x="325" y="335" width="260" height="42" as="geometry"/>
-    </mxCell>
-    <mxCell id="arrow-script-json" style="endArrow=blockThin;html=1;strokeWidth=2;strokeColor=#FF8F00;endFill=1;" edge="1" parent="1">
-      <mxGeometry relative="1" as="geometry">
-        <mxPoint x="455" y="184" as="sourcePoint"/>
-        <mxPoint x="455" y="335" as="targetPoint"/>
-      </mxGeometry>
-    </mxCell>
-    <mxCell id="arrow-pipeline-frontend" style="endArrow=blockThin;html=1;strokeWidth=3;strokeColor=#E65100;endFill=1;fontSize=9;" edge="1" parent="1">
-      <mxGeometry relative="1" as="geometry">
-        <mxPoint x="600" y="356" as="sourcePoint"/>
-        <mxPoint x="650" y="356" as="targetPoint"/>
-      </mxGeometry>
-    </mxCell>
-    <mxCell id="box-frontend" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=2;dashed=1;" vertex="1" parent="1">
-      <mxGeometry x="650" y="95" width="280" height="320" as="geometry"/>
-    </mxCell>
-    <mxCell id="label-frontend" value="Frontend (Vanilla JS Mobile-First)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=12;fontStyle=1;fontColor=#2E7D32;" vertex="1" parent="1">
-      <mxGeometry x="660" y="100" width="260" height="22" as="geometry"/>
-    </mxCell>
-    <mxCell id="html" value="&lt;b&gt;index.html&lt;/b&gt;&lt;br&gt;Semântico, acessível&lt;br&gt;Seções: unidades, mapa, busca, cursos" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
-      <mxGeometry x="665" y="132" width="250" height="44" as="geometry"/>
-    </mxCell>
-    <mxCell id="css" value="&lt;b&gt;css/styles.css&lt;/b&gt;&lt;br&gt;Paleta :root, mobile-first&lt;br&gt;Cards, checkboxes customizados&lt;br&gt;Estados :hover + :focus-visible" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
-      <mxGeometry x="665" y="188" width="250" height="52" as="geometry"/>
-    </mxCell>
-    <mxCell id="js-ui" value="&lt;b&gt;scripts/script.js&lt;/b&gt;&lt;br&gt;fetch cursos.json&lt;br&gt;montarLista() — DOM Batching&lt;br&gt;formatarHorario() — parser inteligente" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
-      <mxGeometry x="665" y="252" width="250" height="52" as="geometry"/>
-    </mxCell>
-    <mxCell id="js-selecao" value="&lt;b&gt;scripts/selecao.js&lt;/b&gt;&lt;br&gt;Checkboxes de unidade&lt;br&gt;coletarUnidadesSelecionadas()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
-      <mxGeometry x="665" y="316" width="250" height="38" as="geometry"/>
-    </mxCell>
-    <mxCell id="box-fluxo" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#7B1FA2;strokeWidth=2;dashed=1;" vertex="1" parent="1">
-      <mxGeometry x="30" y="440" width="900" height="100" as="geometry"/>
-    </mxCell>
-    <mxCell id="label-fluxo" value="Fluxo do Usuário" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=12;fontStyle=1;fontColor=#7B1FA2;" vertex="1" parent="1">
-      <mxGeometry x="400" y="445" width="160" height="22" as="geometry"/>
-    </mxCell>
-    <mxCell id="step1" value="&lt;b&gt;1&lt;/b&gt; Selecionar&lt;br&gt;Unidades" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7B1FA2;fontSize=10;align=center;" vertex="1" parent="1">
-      <mxGeometry x="60" y="478" width="130" height="44" as="geometry"/>
-    </mxCell>
-    <mxCell id="arrow-step1" style="endArrow=blockThin;html=1;strokeWidth=2;strokeColor=#7B1FA2;endFill=1;" edge="1" parent="1">
-      <mxGeometry relative="1" as="geometry">
-        <mxPoint x="190" y="500" as="sourcePoint"/>
-        <mxPoint x="240" y="500" as="targetPoint"/>
-      </mxGeometry>
-    </mxCell>
-    <mxCell id="step2" value="&lt;b&gt;2&lt;/b&gt; Buscar&lt;br&gt;cursos.json" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7B1FA2;fontSize=10;align=center;" vertex="1" parent="1">
-      <mxGeometry x="243" y="478" width="130" height="44" as="geometry"/>
-    </mxCell>
-    <mxCell id="arrow-step2" style="endArrow=blockThin;html=1;strokeWidth=2;strokeColor=#7B1FA2;endFill=1;" edge="1" parent="1">
-      <mxGeometry relative="1" as="geometry">
-        <mxPoint x="373" y="500" as="sourcePoint"/>
-        <mxPoint x="423" y="500" as="targetPoint"/>
-      </mxGeometry>
-    </mxCell>
-    <mxCell id="step3" value="&lt;b&gt;3&lt;/b&gt; Cards de Curso&lt;br&gt;Nome, horários, vagas" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7B1FA2;fontSize=10;align=center;" vertex="1" parent="1">
-      <mxGeometry x="426" y="478" width="150" height="44" as="geometry"/>
-    </mxCell>
-    <mxCell id="arrow-step3" style="endArrow=blockThin;html=1;strokeWidth=2;strokeColor=#7B1FA2;endFill=1;" edge="1" parent="1">
-      <mxGeometry relative="1" as="geometry">
-        <mxPoint x="576" y="500" as="sourcePoint"/>
-        <mxPoint x="626" y="500" as="targetPoint"/>
-      </mxGeometry>
-    </mxCell>
-    <mxCell id="step4" value="&lt;b&gt;4&lt;/b&gt; Inscrever-se&lt;br&gt;Botão com estado&lt;br&gt;(aberto/futuro)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7B1FA2;fontSize=10;align=center;" vertex="1" parent="1">
-      <mxGeometry x="630" y="478" width="150" height="44" as="geometry"/>
-    </mxCell>
-    <mxCell id="step5" value="&lt;b&gt;5&lt;/b&gt; Link externo&lt;br&gt;Portal Senac" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7B1FA2;fontSize=10;align=center;" vertex="1" parent="1">
-      <mxGeometry x="800" y="478" width="110" height="44" as="geometry"/>
-    </mxCell>
-    <mxCell id="arrow-step4" style="endArrow=blockThin;html=1;strokeWidth=2;strokeColor=#7B1FA2;endFill=1;" edge="1" parent="1">
-      <mxGeometry relative="1" as="geometry">
-        <mxPoint x="780" y="500" as="sourcePoint"/>
-        <mxPoint x="800" y="500" as="targetPoint"/>
-      </mxGeometry>
-    </mxCell>
-    <mxCell id="box-tecnico" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#546E7A;strokeWidth=1;dashed=1;" vertex="1" parent="1">
-      <mxGeometry x="30" y="560" width="900" height="60" as="geometry"/>
-    </mxCell>
-    <mxCell id="label-tecnico" value="Stack Técnico" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontStyle=1;fontColor=#546E7A;" vertex="1" parent="1">
-      <mxGeometry x="45" y="565" width="100" height="20" as="geometry"/>
-    </mxCell>
-    <mxCell id="tech-items" value="Node.js + axios | HTML5 semântico | CSS vanilla mobile-first (320px) | JavaScript ES6+ vanilla | JSON estático | Git + branches | DocumentFragment (DOM batching) | :root custom properties | VDD (Verification-Driven Development)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=9;fontColor=#546E7A;" vertex="1" parent="1">
-      <mxGeometry x="45" y="582" width="870" height="30" as="geometry"/>
-    </mxCell>
-  </root>
-</mxGraphModel>
+<mxfile host="app.diagrams.net" modified="2026-08-04T00:00:00.000Z" agent="Claude" version="24.0.0">
+  <diagram name="Arquitetura Quis Curso Tem" id="arq-qct">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1000" pageHeight="650" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="title" value="Quis Curso Tem — Arquitetura" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=22;fontStyle=1;fontColor=#003a70;" vertex="1" parent="1">
+          <mxGeometry x="280" y="15" width="380" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="box-ext" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;strokeWidth=2;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="70" width="250" height="300" as="geometry"/>
+        </mxCell>
+        <mxCell id="lab-ext" value="Extracao (Node.js + Axios)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=13;fontStyle=1;fontColor=#1565C0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="76" width="230" height="22" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="api1" value="1. Unidade — categoriaPorFriendlyURL/{slug}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1565C0;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="45" y="108" width="220" height="32" as="geometry"/>
+        </mxCell>
+        <mxCell id="api2" value="2. Tipo de Curso — idTipoCursoPorNome" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1565C0;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="45" y="148" width="220" height="32" as="geometry"/>
+        </mxCell>
+        <mxCell id="api3" value="3. Temas — categories?vocabularyIds=40393" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1565C0;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="45" y="188" width="220" height="32" as="geometry"/>
+        </mxCell>
+        <mxCell id="api4" value="4. Cursos — cursosPorCategoriasComFiltros" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1565C0;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="45" y="228" width="220" height="32" as="geometry"/>
+        </mxCell>
+        <mxCell id="api5" value="5. Ofertas — ofertasPorCategoryIds (XML)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1565C0;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="45" y="268" width="220" height="32" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="config" value="config.json — unidades, groupId, filtros" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#FF8F00;fontSize=10;align=center;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="45" y="318" width="220" height="32" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="arr-ext" style="endArrow=blockThin;html=1;strokeWidth=3;strokeColor=#FF8F00;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="280" y="334" as="sourcePoint"/>
+            <mxPoint x="340" y="334" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lab-arr-ext" value="cursos.json (npm run dados)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=8;fontColor=#FF8F00;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="260" y="298" width="90" height="30" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="box-fe" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=2;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="340" y="70" width="300" height="300" as="geometry"/>
+        </mxCell>
+        <mxCell id="lab-fe" value="Frontend (Vanilla JS Mobile-First)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=13;fontStyle=1;fontColor=#2E7D32;" vertex="1" parent="1">
+          <mxGeometry x="350" y="76" width="280" height="22" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="html" value="index.html — selecao-unidades, mapa, busca, cursos" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="355" y="108" width="270" height="32" as="geometry"/>
+        </mxCell>
+        <mxCell id="css" value="css/styles.css — paleta :root, mobile-first 320px" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="355" y="150" width="270" height="32" as="geometry"/>
+        </mxCell>
+        <mxCell id="js" value="scripts/script.js — fetch, cache, DocumentFragment" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="355" y="192" width="270" height="32" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="fluxo-js" value="Fluxo: checkbox change → coletarUnidades → converterUrls → filtrar → agruparPorCodigo → montarLista" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8E9;strokeColor=#8BC34A;fontSize=8;align=center;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="355" y="240" width="270" height="30" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="label-hover" value="Estados hover + focus-visible em todos os interativos" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=8;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="355" y="280" width="270" height="20" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="box-escolhas" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#7B1FA2;strokeWidth=2;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="400" width="610" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="lab-escolhas" value="Escolhas Tecnicas" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=12;fontStyle=1;fontColor=#7B1FA2;" vertex="1" parent="1">
+          <mxGeometry x="45" y="406" width="150" height="20" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e1" value="Indice estatico&lt;br&gt;pre-gerado (sem servidor)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7B1FA2;fontSize=9;align=center;" vertex="1" parent="1">
+          <mxGeometry x="45" y="436" width="100" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="e2" value="DOM Batching&lt;br&gt;(DocumentFragment)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7B1FA2;fontSize=9;align=center;" vertex="1" parent="1">
+          <mxGeometry x="160" y="436" width="100" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="e3" value="Mobile-first&lt;br&gt;320px+" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7B1FA2;fontSize=9;align=center;" vertex="1" parent="1">
+          <mxGeometry x="275" y="436" width="90" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="e4" value="Pt-BR (dominio)&lt;br&gt;EN (API/tech)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7B1FA2;fontSize=9;align=center;" vertex="1" parent="1">
+          <mxGeometry x="380" y="436" width="100" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="e5" value="VDD&lt;br&gt;Shift-Left" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7B1FA2;fontSize=9;align=center;" vertex="1" parent="1">
+          <mxGeometry x="495" y="436" width="80" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="box-fluxo" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#E65100;strokeWidth=2;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="510" width="610" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="lab-fluxo" value="Fluxo do Usuario" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=12;fontStyle=1;fontColor=#E65100;" vertex="1" parent="1">
+          <mxGeometry x="250" y="514" width="150" height="18" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="f1" value="1. Selecionar&lt;br&gt;unidades" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="45" y="542" width="90" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="f2" value="2. Buscar&lt;br&gt;(texto + tags)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="165" y="542" width="100" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="f3" value="3. Cards com&lt;br&gt;nome + horarios" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="295" y="542" width="110" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="f4" value="4. Inscrever-se&lt;br&gt;(ativo ou data)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="435" y="542" width="105" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="f5" value="5. Portal&lt;br&gt;sp.senac.br" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="565" y="542" width="60" height="44" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="af1" style="endArrow=blockThin;html=1;strokeWidth=2;strokeColor=#E65100;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="135" y="564" as="sourcePoint"/><mxPoint x="165" y="564" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="af2" style="endArrow=blockThin;html=1;strokeWidth=2;strokeColor=#E65100;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="265" y="564" as="sourcePoint"/><mxPoint x="295" y="564" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="af3" style="endArrow=blockThin;html=1;strokeWidth=2;strokeColor=#E65100;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="405" y="564" as="sourcePoint"/><mxPoint x="435" y="564" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="af4" style="endArrow=blockThin;html=1;strokeWidth=2;strokeColor=#E65100;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="540" y="564" as="sourcePoint"/><mxPoint x="565" y="564" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <mxCell id="box-stack" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#546E7A;strokeWidth=1;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="618" width="610" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="stack-text" value="Node.js + Axios | HTML5 semantico | CSS vanilla :root | JS ES6+ (fetch, DocumentFragment) | JSON estatico | VDD + Kanban (Trello)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=9;fontColor=#546E7A;" vertex="1" parent="1">
+          <mxGeometry x="40" y="622" width="590" height="20" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
