@@ -91,6 +91,25 @@ header {
     gap: 0.5rem;
 }
 
+.botao-buscar {
+    margin-left: auto;
+    background: var(--cor-primaria);
+    color: var(--cor-branco);
+    border: none;
+    border-radius: var(--arredondar);
+    padding: 0.5rem 1.1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+
+    &:hover,
+    &:focus-visible {
+        background: var(--cor-primaria-foco);
+        outline: 2px solid var(--cor-primaria-foco);
+    }
+}
+
 .checkbox-filtro {
     display: flex;
     align-items: center;

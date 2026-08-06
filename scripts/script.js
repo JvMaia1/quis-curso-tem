@@ -11,6 +11,8 @@ const mapeamento_unidades = {
 
 let idsUnidades;
 
+let filtroCursosDisponiveis;
+
 let cursosEmCache = [];
 
 let unidadesSelecionadas = []; // deve receber o id das unidades selecionadas
@@ -41,31 +43,48 @@ const checkboxes = document.querySelectorAll('#lista-checkboxes input[type="chec
     
 })();
 
+const cbCursosDisponiveis = document.querySelector('#apenas-disponiveis');
+
+cbCursosDisponiveis.addEventListener('change', () => {    
+    if(!idsUnidades || idsUnidades.length === 0){
+        listaDeCursos.innerHTML = '<li class="lista-vazia">Selecione uma unidade</li>';
+    }
+    if(cbCursosDisponiveis.checked){
+        filtroCursosDisponiveis = true;
+    }else {  
+        filtroCursosDisponiveis = false;
+    }
+});
+
 checkboxes.forEach(cb => {
     cb.addEventListener('change', () => {
         idsUnidades = coletarUnidadesSelecionadas();
         unidadesSelecionadas = converterUrlsEmNomes(idsUnidades);
-        renderizarCursos(unidadesSelecionadas, cursosEmCache);
-
     });
 });
 
-/* TODO(MAIA): listener do checkbox #apenas-disponiveis — re-renderizar com o
- * estado atual. Trocar (desmarcar todas as unidades → "Selecione uma unidade",
- * só muda a filtragem quando há unidades selecionadas). */
+/* TODO(MAIA): BUS-02 — conectar a busca (termo do campo #busca). Por ora o
+ * botão só re-renderiza com o estado atual de unidades/filtro. */
+const botaoBuscar = document.getElementById('btn-buscar');
+
+botaoBuscar.addEventListener('click', () => {
+    if(!idsUnidades || idsUnidades.length === 0){
+
+    } else { 
+        renderizarCursos(unidadesSelecionadas, filtroCursosDisponiveis, cursosEmCache);
+    }
+});
 
 function filtroDisponivel(curso, hoje){
-    /* Contrato — filtroDisponivel
-     * Entrada:  curso (grupo pós-agruparPorCodigo, com .ofertas), hoje (Date)
-     * Saída:    boolean — true se inscrição já ABERTA
-     * Regra:    curso tem oferta com dataAberturaBolsa ≤ hoje
-     *           (espelha criarBotaoInscricao: data futura = "Inscrição em DD/MM")
-     *           false se data futura, sem data ou sem ofertas
-     * Testes mentais:
+    console.log(curso);
+    /*  
+     *   Testes mentais:
      *   oferta dataAberturaBolsa="2026-08-01", hoje=2026-08-05 → true
      *   oferta dataAberturaBolsa="2026-09-01", hoje=2026-08-05 → false
      *   curso sem ofertas / sem dataAberturaBolsa                  → false
      */
+
+    // if(curso.)
 }
 
 function coletarUnidadesSelecionadas(){
@@ -73,7 +92,7 @@ function coletarUnidadesSelecionadas(){
     return Array.from(unidadesSelecionadas).map(cb => cb.value);
 };
 
-function renderizarCursos(unidadesSelecionadas, cursos){
+function renderizarCursos(unidadesSelecionadas, filtroCursosDisponiveis, cursos){
 
     if(!unidadesSelecionadas || unidadesSelecionadas.length === 0){
         listaDeCursos.innerHTML = '<li class="lista-vazia">Selecione uma unidade</li>';  
@@ -85,9 +104,13 @@ function renderizarCursos(unidadesSelecionadas, cursos){
     if (unidadesSelecionadas && unidadesSelecionadas.length > 0){
         let listaCursosFiltrada = filtrarCursosUnSelecionadas(unidadesSelecionadas, cursos);
         let listaFinalProcessada = agruparPorCodigo(listaCursosFiltrada);
-        /* TODO(MAIA): se #apenas-disponiveis estiver checked, filtrar por disponibilidade
-         * ANTES de montar: listaFinalProcessada = listaFinalProcessada.filter(
-         *     curso => filtroDisponivel(curso, hoje)); */
+        if (filtroCursosDisponiveis){
+            listaFinalProcessada = listaFinalProcessada.some(curso => curso.ofertas.dataAberturaBolsa >= hoje);       
+            console.log(listaFinalProcessada.some(curso => curso.ofertas.dataAberturaBolsa >= hoje));
+            
+
+        } else{ console.log('c');
+        }
         montarLista(listaFinalProcessada, listaDeCursos, hoje);
     }
 };
