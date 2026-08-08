@@ -19,7 +19,7 @@
     "companyId": "20102",
     "vocabularyId": "40393",
     "timeoutMs": 30000,
-    "delayEntreTemasMs": 300,
+    "delayEntreTemasMs": 100,
     "delayEntreOfertasMs": 100
   }
 }

@@ -25,16 +25,19 @@ Consome a API REST interna do portal Senac (Liferay) — sem navegador, sem scra
 ├── index.html              # Frontend SPA
 ├── css/styles.css          # Estilos mobile-first
 ├── scripts/
-│   ├── script.js           # JS de Dados — fetch, cache, renderização
-│   ├── selecao.js          # JS de UI — checkboxes de unidade
-│   └── cursos.js           # Extrator (WIP — reescrita do legado)
+│   ├── script.js           # Frontend — fetch, cache, renderização
+│   ├── cursos.js           # Orquestrador da extração (Node)
+│   ├── api-senac.js        # Módulo cliente HTTP + endpoints Liferay
+│   └── todo.js             # Contratos das funções pendentes (gitignored)
 ├── legacy/
-│   ├── senac-api.js        # Extrator funcional (referência)
+│   ├── senac-api.js        # Extrator monolítico (referência)
+│   ├── selecao.js          # UI checkboxes (substituído por script.js)
 │   ├── scout-api.js        # Playwright page inspector (obsoleto)
 │   └── senac.js            # Playwright scraper (obsoleto)
 ├── docs/
 │   ├── api_documentacao.md # Documentação dos endpoints do Senac
-│   └── exemplo-output-curso.json
+│   ├── exemplo-output-curso.json
+│   └── fluxo-script.drawio # Diagrama do fluxo de extração
 ├── config.json             # Unidades, filtros e parâmetros da API
 └── package.json
 ```

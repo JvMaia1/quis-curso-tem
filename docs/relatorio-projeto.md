@@ -1,26 +1,52 @@
 # Relatório — Quis Curso Tem
 
-> Gerado em 2026-08-05.
+> Gerado em 2026-08-05. Atualizado em 2026-08-08.
 
 ## Visão geral
 App vanilla (HTML+CSS+JS, zero framework) que lista **bolsas de estudo Senac SP** de 2 unidades (Penha, São Miguel Paulista). Dados **extraídos de API Liferay** → arquivo estático `cursos.json` → filtro por checkbox no navegador.
 
-## Estágio 1 — Extração de dados (`scripts/cursos.js`, `npm run dados`)
+## Estágio 1 — Extração de dados (`scripts/cursos.js` + `scripts/api-senac.js`, `npm run dados`)
 
-Orquestra coleta da API `https://www.sp.senac.br` (Liferay). Config em `config.json`. Cadeia por unidade:
+Arquitetura modularizada em 2026-08-08. Orquestra coleta da API `https://www.sp.senac.br` (Liferay). Config em `config.json`.
 
+### Módulo API (`scripts/api-senac.js`)
+- `api` — instância axios com User-Agent, Accept, timeout
+- IDs Liferay: `ID_GRUPO_SENAC_SP` (20125), `ID_EMPRESA_SENAC` (20102), `ID_VOCABULARIO_AREA_TEMA` (40393)
+- `obterIdUnidade(friendlyUrl)` → `categoryId`
+- `obterIdTipoCurso(nome)` → id do tipo de curso
+- `listarTemas()` → lista de áreas/temas mercadológicos
+- `buscarOfertasCurso` — scaffold (bug: template string aspas simples, sem return)
+
+### Orquestrador (`scripts/cursos.js`)
+Fluxo em camadas:
 ```
-obterIdUnidade(friendlyUrl) → id de categoria
-  → obterIdTipoCurso("Livre")
-  → listarTemas() → lista de áreas/temas mercadológicos
-  → buscarCursosPorCategoria(tema, tipo, unidade) → cursos com paginação
+extrairTodosOsCursos(falhas)
+  → obterIdTipoCurso + listarTemas (com retry)
+  → para cada unidade:
+      processarCursosDaUnidade(temas, idUnidade, idTipoCurso, unidade, falhas)
+        → agruparCursosPorTema(temas, idUnidade, idTipoCurso, falhas)
+            → buscarCursosPorCategoria (paginação, retry)
+            → retorna [{tema, cursos}]
+        → para cada {tema, cursos}:
+            extrairCurso(cursos, tema, idUnidade, falhas, unidade)
+              → buscarOfertasCurso (retry) + mapearOfertas
+              → retorna cursos enriquecidos
 ```
 
 Funções:
-- `executarComRetentativa(operacao, tentativas, descricao, falhas)` — retry backoff exponencial (1s→2s→4s). **4xx não retenta** (erro permanente). Falhas acumulam em `falhas[]`, exit code 1.
-- `buscarCursosPorCategoria` — página de 100 em 100. **HTTP 500 = fim da paginação** (bug conhecido da API, tratado como `break`, não erro).
-- `processarUnidade` — orquestra os 3 IDs + temas, coleta `{unidade, tema, curso, codigoFT, url, descricao, modalidade}`.
+- `executarComRetentativa(operacao, tentativas, descricao, falhas)` — retry backoff exponencial (1s→2s→4s). **4xx não retenta** (erro permanente).
+- `buscarCursosPorCategoria` — página de 100 em 100. **HTTP 500 = fim da paginação** (tratado como `break`).
+- `agruparCursosPorTema` — agrupa cursos por tema, retorna `[{tema, cursos}]` preservando referência ao tema.
+- `extrairCurso` — processa cursos de um tema, enriquece com ofertas, monta objeto final com `tema.name` e `tema.categoryId`.
+- `processarCursosDaUnidade` — orquestra agrupamento + extração por unidade.
+- `logInicial` / `logFinal` — funções de log isoladas da lógica.
 - `--dry-run` — testa sem escrever arquivo.
+
+### Pendências (contratos em `scripts/todo.js`)
+- `buscarOfertasCurso` — implementar com template string correto (backticks) + return + parseOfertaXML
+- `parseOfertaXML` — parse de XML com 3 formatos (CDATA direto, option, texto puro)
+- `mapearOfertas` — transformar array cru em shape do contrato
+- `mapearOferta` — mapear 1 oferta para 15 campos do contrato
 
 ## Estágio 2 — Frontend (`scripts/script.js`)
 

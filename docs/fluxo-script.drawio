@@ -1,0 +1,286 @@
+<mxfile host="app.diagrams.net" modified="2026-08-07T00:00:00.000Z" agent="Claude" version="24.0.0">
+  <diagram name="Fluxo de Extração (scripts/cursos.js)" id="fluxo-script">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="1520" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="title" value="quis-curso-tem — Fluxo de extração (scripts/cursos.js)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=20;fontStyle=1;fontColor=#003a70;" vertex="1" parent="1">
+          <mxGeometry x="220" y="10" width="660" height="36" as="geometry"/>
+        </mxCell>
+
+        <!-- ============ FAIXA 1: SETUP ============ -->
+        <mxCell id="f-setup" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;strokeWidth=2;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="60" width="980" height="250" as="geometry"/>
+        </mxCell>
+        <mxCell id="lab-setup" value="1. SETUP" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=14;fontStyle=1;fontColor=#1565C0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="68" width="120" height="22" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="s0" value="npm run dados  (extração real)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1565C0;strokeColor=#0D47A1;fontColor=#FFFFFF;fontStyle=1;arcSize=50;" vertex="1" parent="1">
+          <mxGeometry x="400" y="88" width="300" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="s0b" value="npm run dados:dev = --dry-run  (não grava arquivo)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=9;fontColor=#1565C0;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="400" y="126" width="300" height="18" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="s1" value="CONFIG ← ler config.json&#10;(unidades, tipoCurso, filtros, api)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1565C0;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="400" y="152" width="300" height="34" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="s2" value="api = axios.create(baseUrl, headers, timeout 30s)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1565C0;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="400" y="198" width="300" height="34" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="s3" value="DRY_RUN = --dry-run&#10;IDs Liferay: groupId, companyId, vocabularyId" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1565C0;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="400" y="244" width="300" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e_s0_s1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;strokeWidth=2;strokeColor=#1565C0;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="s0" target="s1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_s1_s2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;strokeWidth=2;strokeColor=#1565C0;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="s1" target="s2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_s2_s3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;strokeWidth=2;strokeColor=#1565C0;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="s2" target="s3">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ============ FAIXA 2: ORQUESTRAÇÃO ============ -->
+        <mxCell id="f-orq" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EDE7F6;strokeColor=#5E35B1;strokeWidth=2;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="330" width="980" height="830" as="geometry"/>
+        </mxCell>
+        <mxCell id="lab-orq" value="2. ORQUESTRAÇÃO — processarUnidade(unidade, falhas)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=13;fontStyle=1;fontColor=#5E35B1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="338" width="420" height="22" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="p0" value="processarUnidade(unidade, falhas)&#10;retorna cursosDaUnidade" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#5E35B1;strokeColor=#4527A0;fontColor=#FFFFFF;fontStyle=1;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="400" y="372" width="300" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="p1" value="obterIdUnidade(friendlyUrl)&#10;[executarComRetentativa ×3]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#5E35B1;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="400" y="430" width="300" height="38" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="p2" value="idUnidade&#10;=== null ?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#EF6C00;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="435" y="486" width="230" height="46" as="geometry"/>
+        </mxCell>
+        <mxCell id="p2-skip" value="return []&#10;(skip unidade)" style="text;html=1;strokeColor=#EF6C00;fillColor=none;align=center;verticalAlign=middle;fontSize=9;fontStyle=2;fontColor=#EF6C00;" vertex="1" parent="1">
+          <mxGeometry x="790" y="490" width="120" height="30" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="p3" value="obterIdTipoCurso('Livre')&#10;[executarComRetentativa ×3]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#5E35B1;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="400" y="550" width="300" height="38" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="p4" value="null ?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#EF6C00;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="435" y="606" width="230" height="46" as="geometry"/>
+        </mxCell>
+        <mxCell id="p4-skip" value="return []&#10;(skip unidade)" style="text;html=1;strokeColor=#EF6C00;fillColor=none;align=center;verticalAlign=middle;fontSize=9;fontStyle=2;fontColor=#EF6C00;" vertex="1" parent="1">
+          <mxGeometry x="790" y="610" width="120" height="30" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="p5" value="listarTemas()&#10;[executarComRetentativa ×3]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#5E35B1;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="400" y="670" width="300" height="38" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="p6" value="temas&#10;=== null ?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#EF6C00;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="435" y="726" width="230" height="46" as="geometry"/>
+        </mxCell>
+        <mxCell id="p6-skip" value="return []&#10;(skip unidade)" style="text;html=1;strokeColor=#EF6C00;fillColor=none;align=center;verticalAlign=middle;fontSize=9;fontStyle=2;fontColor=#EF6C00;" vertex="1" parent="1">
+          <mxGeometry x="790" y="730" width="120" height="30" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="p7" value="LOOP TEMAS — para cada tema:&#10;buscarCursosPorCategoria(temaId, tipoId, unidadeId)&#10;página de 100; HTTP 500 = fim da paginação" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#5E35B1;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="400" y="790" width="300" height="48" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="p8" value="cursos null&#10;ou vazio ?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#EF6C00;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="435" y="856" width="230" height="46" as="geometry"/>
+        </mxCell>
+        <mxCell id="p8-skip" value="continue&#10;(próximo tema)" style="text;html=1;strokeColor=#EF6C00;fillColor=none;align=center;verticalAlign=middle;fontSize=9;fontStyle=2;fontColor=#EF6C00;" vertex="1" parent="1">
+          <mxGeometry x="790" y="860" width="120" height="30" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="p9" value="LOOP CURSOS — para cada curso:&#10;buscarOfertasCurso(codigoFT, idUnidade, articleId, dataEfetivaFT)&#10;[executarComRetentativa ×3]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#F9A825;fontSize=10;align=center;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="400" y="920" width="300" height="52" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="p10" value="montar curso:&#10;base do contrato + ofertas: mapearOfertas() / erroOfertas" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#F9A825;fontSize=10;align=center;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="400" y="990" width="300" height="42" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="p11" value="push cursosDaUnidade&#10;sleep(delayEntreOfertasMs)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#5E35B1;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="400" y="1050" width="300" height="38" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="p12" value="sleep(delayEntreTemasMs)&#10;(fim da iteração do tema)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#5E35B1;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="400" y="1106" width="300" height="38" as="geometry"/>
+        </mxCell>
+
+        <!-- edges verticais da orquestração -->
+        <mxCell id="e_p0_p1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;strokeWidth=2;strokeColor=#5E35B1;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="p0" target="p1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_p1_p2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;strokeWidth=2;strokeColor=#5E35B1;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="p1" target="p2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_p2_p3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;strokeWidth=2;strokeColor=#2E7D32;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="p2" target="p3">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_p2_skip" value="sim (falhou)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;strokeWidth=1.5;strokeColor=#EF6C00;endFill=1;fontSize=8;fontColor=#EF6C00;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="p2" target="p2-skip">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_p3_p4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;strokeWidth=2;strokeColor=#5E35B1;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="p3" target="p4">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_p4_p5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;strokeWidth=2;strokeColor=#2E7D32;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="p4" target="p5">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_p4_skip" value="sim (falhou)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;strokeWidth=1.5;strokeColor=#EF6C00;endFill=1;fontSize=8;fontColor=#EF6C00;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="p4" target="p4-skip">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_p5_p6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;strokeWidth=2;strokeColor=#5E35B1;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="p5" target="p6">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_p6_p7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;strokeWidth=2;strokeColor=#2E7D32;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="p6" target="p7">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_p6_skip" value="sim (falhou)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;strokeWidth=1.5;strokeColor=#EF6C00;endFill=1;fontSize=8;fontColor=#EF6C00;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="p6" target="p6-skip">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_p7_p8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;strokeWidth=2;strokeColor=#5E35B1;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="p7" target="p8">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_p8_p9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;strokeWidth=2;strokeColor=#2E7D32;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="p8" target="p9">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_p8_skip" value="sim" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;strokeWidth=1.5;strokeColor=#EF6C00;endFill=1;fontSize=8;fontColor=#EF6C00;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="p8" target="p8-skip">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_p9_p10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;strokeWidth=2;strokeColor=#F9A825;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="p9" target="p10">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_p10_p11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;strokeWidth=2;strokeColor=#F9A825;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="p10" target="p11">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_p11_p12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;strokeWidth=2;strokeColor=#5E35B1;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="p11" target="p12">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- edges de retorno dos loops -->
+        <mxCell id="e_p12_p7" value="próximo tema" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;strokeWidth=1.5;strokeColor=#8E8E8E;endFill=1;dashed=1;fontSize=8;fontColor=#8E8E8E;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="p12" target="p7">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_p11_p9" value="próximo curso" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;strokeWidth=1.5;strokeColor=#8E8E8E;endFill=1;dashed=1;fontSize=8;fontColor=#8E8E8E;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="p11" target="p9">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- HELPERS (lateral) -->
+        <mxCell id="h-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#FF8F00;strokeWidth=2;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="770" y="430" width="220" height="190" as="geometry"/>
+        </mxCell>
+        <mxCell id="h-lab" value="HELPERS" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=12;fontStyle=1;fontColor=#FF8F00;" vertex="1" parent="1">
+          <mxGeometry x="770" y="438" width="220" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="h-sleep" value="sleep(ms)&#10;promise + setTimeout" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FF8F00;fontSize=9;align=center;" vertex="1" parent="1">
+          <mxGeometry x="782" y="464" width="196" height="32" as="geometry"/>
+        </mxCell>
+        <mxCell id="h-ret" value="executarComRetentativa(op, tentativas, desc, falhas)&#10;• backoff 1s → 2s → 4s&#10;• erro 4xx: NÃO retenta&#10;• esgotou: registra falhas[] e devolve null" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FF8F00;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="782" y="504" width="196" height="68" as="geometry"/>
+        </mxCell>
+        <mxCell id="h-ref" value="chamado por: obterIdUnidade, obterIdTipoCurso, listarTemas, buscarCursosPorCategoria, buscarOfertasCurso" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=8;fontStyle=2;fontColor=#FF8F00;" vertex="1" parent="1">
+          <mxGeometry x="770" y="580" width="220" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_h_ref" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#FF8F00;endFill=0;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="p1" target="h-box">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ============ FAIXA 3: ENTRY POINT / SAÍDA ============ -->
+        <mxCell id="f-sai" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=2;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="1180" width="980" height="270" as="geometry"/>
+        </mxCell>
+        <mxCell id="lab-sai" value="3. ENTRY POINT — execução final" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=13;fontStyle=1;fontColor=#2E7D32;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1188" width="300" height="22" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e1" value="LOOP UNIDADES — para cada unidade de CONFIG.unidades:&#10;todosCursos.push(...processarUnidade(unidade, falhas))" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="400" y="1216" width="300" height="42" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e2" value="sumário: total de cursos + lista de falhas" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="400" y="1276" width="300" height="34" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e3" value="DRY_RUN ?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#EF6C00;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="435" y="1328" width="230" height="46" as="geometry"/>
+        </mxCell>
+        <mxCell id="e3-nao" value="não" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=9;fontStyle=2;fontColor=#2E7D32;" vertex="1" parent="1">
+          <mxGeometry x="540" y="1366" width="40" height="18" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e4" value="escrever cursos.json&#10;JSON.stringify(..., null, 2)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2E7D32;strokeColor=#1B5E20;fontColor=#FFFFFF;fontStyle=1;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="400" y="1390" width="300" height="36" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e5" value="process.exit(falhas.length ? 1 : 0)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1B5E20;strokeColor=#0D3B0F;fontColor=#FFFFFF;fontStyle=1;arcSize=50;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="400" y="1444" width="300" height="36" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e_e1_e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;strokeWidth=2;strokeColor=#2E7D32;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="e1" target="e2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_e2_e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;strokeWidth=2;strokeColor=#2E7D32;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="e2" target="e3">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_e3_e4" value="não" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;strokeWidth=2;strokeColor=#2E7D32;endFill=1;fontSize=8;fontColor=#2E7D32;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="e3" target="e4">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_e4_e5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;strokeWidth=2;strokeColor=#2E7D32;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="e4" target="e5">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_e3_e5" value="sim (skip gravação)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;strokeWidth=1.5;strokeColor=#EF6C00;endFill=1;dashed=1;fontSize=8;fontColor=#EF6C00;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="e3" target="e5">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="500" y="1320"/>
+              <mxPoint x="720" y="1320"/>
+              <mxPoint x="720" y="1462"/>
+              <mxPoint x="702" y="1462"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- edge: entry chama processarUnidade -->
+        <mxCell id="e_e1_p0" value="chama" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;strokeWidth=1.5;strokeColor=#5E35B1;endFill=1;dashed=1;fontSize=8;fontColor=#5E35B1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="e1" target="p0">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="390" y="1237"/>
+              <mxPoint x="390" y="392"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- LEGENDA -->
+        <mxCell id="leg-title" value="Legenda" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontStyle=1;fontColor=#37474F;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1470" width="120" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg1" value="  Setup" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1490" width="90" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg2" value="  Orquestração" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EDE7F6;strokeColor=#5E35B1;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="140" y="1490" width="110" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg3" value="  Saída" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="260" y="1490" width="90" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg4" value="  TODO(MAIA) a implementar" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#F9A825;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="360" y="1490" width="160" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg5" value="  Decisão (ramo)" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#EF6C00;fontSize=8;" vertex="1" parent="1">
+          <mxGeometry x="530" y="1490" width="110" height="22" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
