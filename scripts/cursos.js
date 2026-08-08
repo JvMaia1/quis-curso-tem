@@ -140,6 +140,70 @@ async function buscarCursosPorCategoria(idAreaTema, idTipoCurso, idUnidade) {
   return todosCursos;
 }
 
+/** Busca ofertas de um curso específico na plataforma */
+async function buscarOfertasCurso(codigoFTOferta, idUnidade, cursoArticleId, dataEfetivaOferta) {
+  /* TODO(MAIA): DADOS-01 — implementar
+   * Entrada:  codigoFTOferta (string), idUnidade (categoryId da unidade),
+   *           cursoArticleId, dataEfetivaOferta
+   * Saída:    array de ofertas cruas, cada uma com `detalhes` parseados
+   *           via parseOfertaXML(oferta.content || '')
+   *
+   * Chamada:  GET /o/senac-oferta-services/ofertasPorCategoryIds/${CONFIG.api.groupId}
+   *           params: { codigoFTOferta, categoryIds: [idUnidade], cursoArticleId,
+   *           dataEfetivaOferta, start: 0, end: 100, considerarDataBolsaFutura: true }
+   *
+   * Testes mentais:
+   * - API sem ofertas → data vazio → retorna []
+   */
+}
+
+/** Extrai campos nome/valor do XML de detalhes de uma oferta */
+function parseOfertaXML(xmlString) {
+  /* TODO(MAIA): DADOS-01 — implementar
+   * Entrada:  xmlString (string XML bruto do campo `content` da oferta)
+   * Saída:    objeto { nomeCampo: valor }
+   *
+   * Três formatos possíveis dentro de <dynamic-element name="...">:
+   * 1. CDATA direto:    <dynamic-content><![CDATA[valor]]></dynamic-content>
+   * 2. Option (select): <dynamic-content><option><![CDATA[valor]]></option></dynamic-content>
+   * 3. Texto puro:      <dynamic-content>valor</dynamic-content>
+   *
+   * Testes mentais:
+   * - bloco com CDATA direto → { nomeCampo: 'valor' }
+   * - bloco select com option CDATA → valor dentro do option
+   * - conteúdo vazio → campo com string vazia
+   */
+}
+
+/** Transforma a lista crua de ofertas no shape do contrato */
+function mapearOfertas(ofertasApi) {
+  /* TODO(MAIA): DADOS-01 — implementar
+   * Entrada:  ofertasApi (array com `detalhes` parseados por parseOfertaXML)
+   * Saída:    array de ofertas no shape do contrato (15 campos)
+   * Implementação sugerida: ofertasApi.map(mapearOferta)
+   */
+}
+
+/** Mapeia uma oferta para o shape do contrato (15 campos, todos string, `|| ''`) */
+function mapearOferta(detalhes) {
+  /* TODO(MAIA): DADOS-01 — implementar
+   * Entrada:  detalhes (objeto de campos parseados do XML)
+   * Saída:    objeto com 15 campos, todos string, `|| ''` quando ausente:
+   *   dataInicio (dataInicioOferta), dataFim (dataFimOferta),
+   *   horarios (horariosAllOferta), diasDaSemana (diasDaSemanaOferta),
+   *   periodoDia (periodoDiaOferta), totalVagas (qtdeTotalVagas),
+   *   vagasPSG (qtdeTotalVagasPSG), dataAberturaBolsa (dataAberturaBolsaOferta),
+   *   precoVenda (precoVendaOferta), precoDesconto (Text91718406),
+   *   maxParcelas (numeroMaxParcelasOferta), valorParcela (precoVendaMaxParcelaOferta),
+   *   permiteListaEspera (permiteListaEspera), dataLimiteMatricula (dtLimiteMatricula),
+   *   localEspacoExterno (localEspacoExterno)
+   *
+   * Testes mentais:
+   * - { dataInicioOferta: '01/08/2026' } → { dataInicio: '01/08/2026', dataFim: '', ... }
+   * - detalhes vazio → todos os 15 campos com ''
+   */
+}
+
 // ---------------------------------------------------------------
 // Orquestração
 // ---------------------------------------------------------------
@@ -187,15 +251,29 @@ async function processarUnidade(unidade, falhas) {
     console.log(`     → ${cursos.length} cursos`);
 
     for (const curso of cursos) {
+      const ofertas = await executarComRetentativa(
+        () => buscarOfertasCurso(curso.codigoFT, idUnidade, curso.articleId, curso.dataEfetivaFT),
+        3, `ofertas de "${curso.title}"`, falhas
+      );
+
       cursosDaUnidade.push({
         unidade: unidade.nome,
+        unidadeId,
         tema: tema.name,
+        temaId: tema.categoryId,
         curso: curso.title,
         codigoFT: curso.codigoFT,
+        articleId: curso.articleId,
         url: curso.url ? `${CONFIG.api.baseUrl}${curso.url}` : null,
-        descricao: curso.descricao || '',
+        imagemURL: curso.imagemURL ? `${CONFIG.api.baseUrl}${curso.imagemURL}` : null,
         modalidade: curso.modalidade || [],
+        formato: curso.formatos || [],
+        tags: curso.tags || [],
+        ofertas: ofertas ? mapearOfertas(ofertas) : [],
+        erroOfertas: ofertas === null ? 'Falha ao buscar ofertas' : undefined,
       });
+
+      await sleep(CONFIG.api.delayEntreOfertasMs);
     }
 
     await sleep(CONFIG.api.delayEntreTemasMs);
