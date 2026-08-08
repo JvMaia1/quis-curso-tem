@@ -4,6 +4,9 @@ package-lock.json
 # Dados extraídos — gerados via npm run dados
 cursos.json
 
+# TODOs de implementação JS — contratos antes do código
+scripts/todo.js
+
 # Documentação de sessão — ver memory/
 docs/agents.md
 docs/MEMORY.md

@@ -1,54 +1,32 @@
 'use strict'
 
-const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
-
-// ---------------------------------------------------------------
-// Config
-// ---------------------------------------------------------------
-
-const CONFIG = JSON.parse(fs.readFileSync(path.join(__dirname, '../config.json'), 'utf-8'));
-const DRY_RUN = process.argv.includes('--dry-run');
-
-// IDs fixos da plataforma Liferay do Senac SP
-const ID_GRUPO_SENAC_SP = CONFIG.api.groupId;       // site/grupo do Senac SP
-const ID_EMPRESA_SENAC = CONFIG.api.companyId;      // instância/empresa Senac
-const ID_VOCABULARIO_AREA_TEMA = CONFIG.api.vocabularyId; // vocabulário "Área / Tema Mercadológico"
-
-// ---------------------------------------------------------------
-// HTTP client
-// ---------------------------------------------------------------
-
-const api = axios.create({
-  baseURL: CONFIG.api.baseUrl,
-  headers: {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-    'Accept': 'application/json',
-  },
-  timeout: CONFIG.api.timeoutMs,
-});
+const {
+  api,
+  ID_GRUPO_SENAC_SP,
+  ID_EMPRESA_SENAC,
+  ID_VOCABULARIO_AREA_TEMA,
+  obterIdUnidade,
+  obterIdTipoCurso,
+  listarTemas,
+} = require('./api-senac');
 
 
-// ---------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------
+// Config ---------------------------------------------------------------
+const CONFIG = JSON.parse(fs.readFileSync(path.join(__dirname, '../config.json'), 'utf-8')); //Pegando configuraçoes do json de configs
+const DRY_RUN = process.argv.includes('--dry-run');//Guardando escolha do usuario se dry run ou nao
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+// Helpers---------------------------------------------------------------
+function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
 
-/**
- * Executa operacao() até `tentativas` vezes com backoff exponencial.
- * Começa em 1s e dobra a cada tentativa (1s, 2s, 4s).
- * Se todas falharem, retorna null e registra o erro em `falhas[]`.
- */
 async function executarComRetentativa(operacao, tentativas, descricao, falhas) {
   for (let i = 0; i < tentativas; i++) {
     try {
       return await operacao();
     } catch (err) {
-      // Erros 4xx não são transientes — não adianta retentar
+
+      // Erros 4xx não adianta retentar, para e avisa o usuário
       const status = err.response && err.response.status;
       if (status && status >= 400 && status < 500) {
         console.error(`  ❌ [${descricao}] erro ${status}: ${err.message}`);
@@ -57,54 +35,54 @@ async function executarComRetentativa(operacao, tentativas, descricao, falhas) {
       }
 
       if (i < tentativas - 1) {
+        // mostrando retentativas ao usuário
         const espera = 1000 * Math.pow(2, i);
+        console.log("");
         console.error(`  ⚠️  [${descricao}] tentativa ${i + 1}/${tentativas} falhou, retry em ${espera / 1000}s: ${err.message}`);
         await sleep(espera);
       } else {
+        console.log("");
         console.error(`  ❌ [${descricao}] esgotadas ${tentativas} tentativas: ${err.message}`);
         falhas.push({ descricao, erro: err.message });
         return null;
       }
     }
   }
-}
+};
 
-// ---------------------------------------------------------------
-// Funções da API do Senac
-// ---------------------------------------------------------------
+async function extrairCurso(cursos, tema, idUnidade, falhas, unidade ){
+  
+  let cursosProcessados = [];
 
-/** Obtém o categoryId da unidade a partir da friendly URL */
-async function obterIdUnidade(friendlyUrl) {
-  const { data } = await api.get(`/o/senac-unidade-services/categoriaPorFriendlyURL/${friendlyUrl}/0`);
-  if (!data || data.length === 0) {
-    throw new Error(`Unidade não encontrada: ${friendlyUrl}`);
-  }
-  return data[0].categoryId;
-}
+  for (const curso of cursos) {
+    const ofertas = await executarComRetentativa(
+      () => buscarOfertasCurso(curso.codigoFT, idUnidade, curso.articleId, curso.dataEfetivaFT),
+      3, `ofertas de "${curso.title}"`, falhas
+    );
 
-/** Obtém o categoryId do tipo de curso (ex: "Livre", "Técnico") */
-async function obterIdTipoCurso(nome) {
-  const { data } = await api.get(
-    `/o/senac-content-services/idTipoCursoPorNome/${ID_GRUPO_SENAC_SP}/${encodeURIComponent(nome)}`
-  );
-  return data;
-}
+    cursosProcessados.push({
+      unidade: unidade.nome, idUnidade,
+      tema: tema.name,
+      temaId: tema.categoryId,
+      curso: curso.title,
+      codigoFT: curso.codigoFT,
+      articleId: curso.articleId,
+      url: curso.url ? `${CONFIG.api.baseUrl}${curso.url}` : null,
+      imagemURL: curso.imagemURL ? `${CONFIG.api.baseUrl}${curso.imagemURL}` : null,
+      modalidade: curso.modalidade || [],
+      formato: curso.formatos || [],
+      tags: curso.tags || [],
+      ofertas: ofertas ? mapearOfertas(ofertas) : [],
+      erroOfertas: ofertas === null ? 'Falha ao buscar ofertas' : undefined,
+    });
 
-/** Lista todas as áreas/temas mercadológicos */
-async function listarTemas() {
-  const { data } = await api.get('/o/senac-category-services/categories', {
-    params: {
-      companyId: ID_EMPRESA_SENAC,
-      groupIds: ID_GRUPO_SENAC_SP,
-      parentCategoryIds: 0,
-      vocabularyIds: ID_VOCABULARIO_AREA_TEMA,
-    },
-  });
-  return data;
-}
+    await sleep(CONFIG.api.delayEntreOfertasMs);
+  };
 
-/** Busca cursos de uma área/tema específica, paginando até esgotar */
-async function buscarCursosPorCategoria(idAreaTema, idTipoCurso, idUnidade) {
+  return cursosProcessados;
+};
+
+async function buscarCursosPorCategoria(idTema, idTipoCurso, idUnidade) {
   const temInscricao = CONFIG.filtros.temInscricoesAbertas ? 1 : 0;
   const temBolsa = CONFIG.filtros.temBolsaEstudo ? 1 : 0;
 
@@ -118,7 +96,7 @@ async function buscarCursosPorCategoria(idAreaTema, idTipoCurso, idUnidade) {
       const response = await api.get(
         `/o/senac-content-services/cursosPorCategoriasComFiltrosBolsaECompra/${ID_GRUPO_SENAC_SP}/${temInscricao}/${temBolsa}/1/${start}/${start + limit}`,
         {
-          params: { categoryIds: [idAreaTema, idTipoCurso, idUnidade] },
+          params: { categoryIds: [idTema, idTipoCurso, idUnidade] },
           paramsSerializer: { indexes: null },
         }
       );
@@ -130,7 +108,7 @@ async function buscarCursosPorCategoria(idAreaTema, idTipoCurso, idUnidade) {
       throw err;
     }
 
-    const resultado = typeof data === 'string' ? JSON.parse(data) : data;
+    const resultado = typeof data === 'string' ? JSON.parse(data) : data; //comentar o porque disso de maneira resumida
     if (!resultado || !resultado.cursos || resultado.cursos.length === 0) break;
 
     todosCursos = todosCursos.concat(resultado.cursos);
@@ -138,39 +116,11 @@ async function buscarCursosPorCategoria(idAreaTema, idTipoCurso, idUnidade) {
   }
 
   return todosCursos;
-}
+};
 
-// ---------------------------------------------------------------
-// Orquestração
-// ---------------------------------------------------------------
-
-async function processarUnidade(unidade, falhas) {
-  console.log(`\n🏫 ${unidade.nome} (${unidade.friendlyUrl})`);
-
-  // 1. Obter ID da unidade
-  const idUnidade = await executarComRetentativa(
-    () => obterIdUnidade(unidade.friendlyUrl),
-    3, `ID unidade ${unidade.nome}`, falhas
-  );
-  if (idUnidade === null) return [];
-
-  // 2. Obter ID do tipo de curso
-  const idTipoCurso = await executarComRetentativa(
-    () => obterIdTipoCurso(CONFIG.tipoCurso),
-    3, `ID tipo curso "${CONFIG.tipoCurso}"`, falhas
-  );
-  if (idTipoCurso === null) return [];
-
-  // 3. Listar áreas/temas
-  const temas = await executarComRetentativa(
-    () => listarTemas(), 3, 'listar áreas/temas', falhas
-  );
-  if (temas === null) return [];
-
-  console.log(`  ${temas.length} áreas/temas encontradas`);
-
-  const cursosDaUnidade = [];
-
+async function agruparCursosPorTema(temas, idUnidade, idTipoCurso, falhas){
+  
+  const resultado = [];
   for (const tema of temas) {
     console.log(`  📂 ${tema.name}`);
 
@@ -179,50 +129,78 @@ async function processarUnidade(unidade, falhas) {
       3, `cursos da área "${tema.name}"`, falhas
     );
 
-    if (cursos === null || cursos.length === 0) {
+    if (!cursos || cursos.length === 0) {
       console.log('     → nenhum curso');
       continue;
     }
 
     console.log(`     → ${cursos.length} cursos`);
-
-    for (const curso of cursos) {
-      cursosDaUnidade.push({
-        unidade: unidade.nome,
-        tema: tema.name,
-        curso: curso.title,
-        codigoFT: curso.codigoFT,
-        url: curso.url ? `${CONFIG.api.baseUrl}${curso.url}` : null,
-        descricao: curso.descricao || '',
-        modalidade: curso.modalidade || [],
-      });
-    }
+    resultado.push({ tema, cursos });
 
     await sleep(CONFIG.api.delayEntreTemasMs);
+  }
+
+  return resultado;
+
+};
+
+async function processarCursosDaUnidade(temas, idUnidade, idTipoCurso, unidade, falhas) {
+  
+  console.log(`\n🏫 ${unidade.nome} (${unidade.friendlyUrl})`);
+
+  console.log(`  ${temas.length} áreas/temas encontradas`);
+
+  const cursosDaUnidade = [];
+  const agrupados = await agruparCursosPorTema(temas, idUnidade, idTipoCurso, falhas);
+
+  for (const { tema, cursos } of agrupados) {
+    cursosDaUnidade.push(...(await extrairCurso(cursos, tema, idUnidade, falhas, unidade)));
   }
 
   return cursosDaUnidade;
 }
 
-// ---------------------------------------------------------------
-// Entry point
-// ---------------------------------------------------------------
+async function extrairTodosOsCursos(falhas){
 
-(async () => {
+  const todosOsCursos = [];
+
+  const idTipoCurso = await executarComRetentativa(
+    () => obterIdTipoCurso(CONFIG.tipoCurso),
+    3, `ID tipo curso "${CONFIG.tipoCurso}"`, falhas
+  );
+
+  const temas = await executarComRetentativa(
+    () => listarTemas(), 3, 'listar áreas/temas', falhas
+  );
+  
+  if (!idTipoCurso || !temas) return [];
+
+  for (const unidade of CONFIG.unidades) {
+    //1. Obter id da unidade
+    const idUnidade = await executarComRetentativa(
+      () => obterIdUnidade(unidade.friendlyUrl),
+      3, `ID unidade ${unidade.nome}`, falhas
+    );
+    
+    if (idUnidade === null) continue;// ta certo isso?
+
+    const cursos = await processarCursosDaUnidade(temas, idUnidade, idTipoCurso, unidade, falhas);
+
+    todosOsCursos.push(...cursos);
+    console.log(`  Total: ${cursos.length} cursos em ${unidade.nome}`);
+  }
+
+  return todosOsCursos;
+} 
+
+function logInicial(){
   console.log('quis-curso-tem — Estágio 1: lista de cursos');
   console.log(`Unidades: ${CONFIG.unidades.map(u => u.nome).join(', ')}`);
   console.log(`Tipo: ${CONFIG.tipoCurso}`);
   if (DRY_RUN) console.log('[dry-run] Nenhum arquivo será escrito.\n');
+};
 
-  const falhas = [];
-  const todosCursos = [];
-
-  for (const unidade of CONFIG.unidades) {
-    const cursos = await processarUnidade(unidade, falhas);
-    todosCursos.push(...cursos);
-    console.log(`  Total: ${cursos.length} cursos em ${unidade.nome}`);
-  }
-
+function logFinal(falhas, todosCursos){
   // Sumário final
   console.log(`\n${'='.repeat(50)}`);
   console.log(`📊 Total: ${todosCursos.length} cursos em ${CONFIG.unidades.length} unidade(s)`);
@@ -237,6 +215,19 @@ async function processarUnidade(unidade, falhas) {
     fs.writeFileSync(outputPath, JSON.stringify(todosCursos, null, 2));
     console.log(`📄 ${outputPath} salvo`);
   }
+
+};
+
+// Entry point---------------------------------------------------------------------------------------------------------------
+(async () => {
+  
+  logInicial();
+  
+  const falhas = [];
+
+  let todosCursos = await extrairTodosOsCursos(falhas);
+
+  logFinal(falhas, todosCursos);
 
   process.exit(falhas.length > 0 ? 1 : 0);
 })();
