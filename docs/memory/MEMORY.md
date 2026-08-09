@@ -1,0 +1,8 @@
+- [Diretrizes do Projeto](agents-directives.md) — Metodologia VDD, micro-deliverables, human-in-the-loop, convenções de código
+- [Metodologia de Tickets](ticket-methodology.md) — Formato Scrum/Kanban, convenções de nomenclatura, anti-padrões
+- [Análise de Práticas — Maia](analise-praticas-maia.md) — Pontos fortes e a melhorar do estilo de código do Maia (2026-08-08)
+- [Sessão 2026-07-29](sessao-2026-07-29.md) — Frontend mobile-first, cards de curso, paleta :root, formatação de horários
+- [Sessão 2026-08-01](sessao-2026-08-01.md) — Reorganização de arquivos, Trello MCP, decisões de arquitetura da busca
+- [Sessão 2026-08-03](sessao-2026-08-03.md) — Fix paginação cursos.js, scaffold BUS-01 HTML/CSS, refactor script.js
+- [Sessão 2026-08-05](sessao-2026-08-05.md) — Revisão relatório, bug schema adiado, commit 97f78e5, scaffold BUS-03 filtro disponíveis
+- [Sessão 2026-08-08](sessao-2026-08-08.md) — Modularização DADOS-01, api-senac.js, contratos todo.js, análise de práticas
