@@ -13,3 +13,4 @@ docs/memory/sessions
 # Configurações locais do Claude Code
 .agents/
 .claude/
+scripts/todo.js
