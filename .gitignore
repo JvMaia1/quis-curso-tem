@@ -5,16 +5,12 @@ package-lock.json
 cursos.json
 
 # TODOs de implementação JS — contratos antes do código
-scripts/todo.js
 
-# Documentação de sessão — ver memory/
-docs/agents.md
-docs/MEMORY.md
-docs/user-decisions.md
-docs/ideias.md
-docs/plano.txt
-docs/Screenshot_1.png
-CLAUDE.md
+
+# Documentação de sessão /
+docs/memory/sessions
+
 # Configurações locais do Claude Code
 .agents/
 .claude/
+scripts/todo.js
