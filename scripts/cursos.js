@@ -23,7 +23,15 @@ function sleep(ms) {
 	return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-//Função para poder realizar qualquer operação de requisição com retry estruturado
+//Função para poder realizar qoperações de requisição com retry estruturado.
+/**
+ * 
+ * @param {function(): Promise<*>} operacao - função assíncrona a ser executada.
+ * @param {number} tentativas - numero de tentativas a serem feitas.
+ * @param {string} descricao - Texto que descreve a operação.
+ * @param {Array<{descricao: string, erro: string}>} falhas - Lista de falhas armazenadas no processo 
+ * @returns {Promise<*|null>} O resultado da operação com sucesso ou null se falhar após os retries.
+ */
 async function executarComRetentativa(operacao, tentativas, descricao, falhas) {
 	for (let i = 0; i < tentativas; i++) {
 		try {
