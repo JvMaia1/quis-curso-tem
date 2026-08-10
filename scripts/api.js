@@ -18,4 +18,3 @@ app.get('/', (req, res) => {
 app.listen(PORTA, () => {
 	console.log(`Rodando na porta ${PORTA}`);
 });
-1;
