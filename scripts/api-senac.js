@@ -8,6 +8,8 @@ const CONFIG = JSON.parse(
 	fs.readFileSync(path.join(__dirname, '../config.json'), 'utf-8'),
 );
 
+const { parseOfertaXML } = require('./ofertas');
+
 // IDs fixos da plataforma Liferay do Senac SP
 const ID_GRUPO_SENAC_SP = CONFIG.api.groupId; // site/grupo do Senac SP
 const ID_EMPRESA_SENAC = CONFIG.api.companyId; // instância/empresa Senac
@@ -56,7 +58,7 @@ async function listarTemas() {
 	return data;
 }
 
-async function buscarOfertasCurso(codigoFTOferta, idUnidade, cursoArticleId, dataEfetivaOferta,) {
+async function buscarOfertasCurso(codigoFTOferta, idUnidade, cursoArticleId, dataEfetivaOferta) {
 	const { data } = await api.get(
 		`/o/senac-oferta-services/ofertasPorCategoryIds/${CONFIG.api.groupId}`,
 		{
@@ -69,8 +71,14 @@ async function buscarOfertasCurso(codigoFTOferta, idUnidade, cursoArticleId, dat
 				end: 100,
 				considerarDataBolsaFutura: true,
 			},
+			// API Liferay não aceita categoryIds[]=x (colchetes); exige categoryIds=x
+			paramsSerializer: { indexes: null },
 		},
 	);
+	return (data || []).map((oferta) => ({
+		...oferta,
+		detalhes: parseOfertaXML(oferta.content || ''),
+	}));
 }
 
 module.exports = {
@@ -81,4 +89,5 @@ module.exports = {
 	obterIdUnidade,
 	obterIdTipoCurso,
 	listarTemas,
+	buscarOfertasCurso,
 };

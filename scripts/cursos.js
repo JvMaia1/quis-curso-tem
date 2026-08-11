@@ -10,7 +10,9 @@ const {
 	obterIdUnidade,
 	obterIdTipoCurso,
 	listarTemas,
+	buscarOfertasCurso,
 } = require('./api-senac');
+const { mapearOfertas } = require('./ofertas');
 
 // Config ---------------------------------------------------------------------------------------------------
 
@@ -250,10 +252,10 @@ function mostrarLogInicial() {
 	if (DRY_RUN) console.log('[dry-run] Nenhum arquivo será escrito.\n');
 }
 
-function mostrarLogFinal(falhas, todosCursos) {
+function mostrarLogFinal(falhas, totalCursos) {
 	// Sumário final
 	console.log(`\n${'='.repeat(50)}`);
-	console.log(`📊 Total: ${todosCursos.length} cursos em ${CONFIG.unidades.length} unidade(s)`);
+	console.log(`📊 Total: ${totalCursos} cursos em ${CONFIG.unidades.length} unidade(s)`);
 
 	if (falhas.length > 0) {
 		console.log(`\n⚠️  ${falhas.length} falha(s):`);
@@ -261,21 +263,74 @@ function mostrarLogFinal(falhas, todosCursos) {
 	}
 
 	if (!DRY_RUN) {
-		const outputPath = path.join(__dirname, '../cursos.json');
-		fs.writeFileSync(outputPath, JSON.stringify(todosCursos, null, 2));
-		console.log(`📄 ${outputPath} salvo`);
+		if (totalCursos > 0) {
+			console.log(`📄 cursos.json salvo`);
+		} else {
+			console.log(`⚠️ Nenhum curso extraído — cursos.json anterior mantido`);
+		}
 	}
 }
 
+/** Executa a extração completa e grava o wrapper em cursos.json (escrita atômica).
+ *
+ * Formato de saída: { dataExtracao, totalCursos, totalOfertas,
+ *                     unidades: [{ nome, friendlyUrl, totalCursos, totalOfertas, cursos }] }
+ * Nunca sobrescreve o arquivo anterior quando nenhum curso é extraído
+ * (falha total) — o JSON velho permanece como fonte dos consumidores.
+ *
+ * @param {Array<{descricao: string, erro: string}>} [falhas=[]] Acumulador de falhas
+ * @returns {Promise<{totalCursos: number, totalOfertas: number, falhas: Array}>} Resumo da extração
+ */
+async function gerarCursos(falhas = []) {
+	const cursos = await extrairTodosOsCursos(falhas);
+
+	const unidades = CONFIG.unidades.map((unidade) => {
+		const cursosDaUnidade = cursos.filter((curso) => curso.unidade === unidade.nome);
+		const totalOfertas = cursosDaUnidade.reduce(
+			(soma, curso) => soma + (curso.ofertas ? curso.ofertas.length : 0),
+			0,
+		);
+		return {
+			nome: unidade.nome,
+			friendlyUrl: unidade.friendlyUrl,
+			totalCursos: cursosDaUnidade.length,
+			totalOfertas,
+			cursos: cursosDaUnidade,
+		};
+	});
+
+	const totalOfertas = unidades.reduce((soma, unidade) => soma + unidade.totalOfertas, 0);
+
+	const resultadoFinal = {
+		dataExtracao: new Date().toISOString(),
+		totalCursos: cursos.length,
+		totalOfertas,
+		unidades,
+	};
+
+	if (!DRY_RUN && cursos.length > 0) {
+		const outputPath = path.join(__dirname, '../cursos.json');
+		const tmpPath = `${outputPath}.tmp`;
+		fs.writeFileSync(tmpPath, JSON.stringify(resultadoFinal, null, 2));
+		fs.renameSync(tmpPath, outputPath);
+	}
+
+	return { totalCursos: cursos.length, totalOfertas, falhas };
+}
+
 // Entry point---------------------------------------------------------------------------------------------------------------
-(async () => {
-	mostrarLogInicial();
+if (require.main === module) {
+	(async () => {
+		mostrarLogInicial();
 
-	const falhas = [];
+		const falhas = [];
 
-	let todosCursos = await extrairTodosOsCursos(falhas);
+		const { totalCursos } = await gerarCursos(falhas);
 
-	mostrarLogFinal(falhas, todosCursos);
+		mostrarLogFinal(falhas, totalCursos);
 
-	process.exit(falhas.length > 0 ? 1 : 0);
-})();
+		process.exit(falhas.length > 0 ? 1 : 0);
+	})();
+}
+
+module.exports = { gerarCursos, extrairTodosOsCursos };
