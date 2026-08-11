@@ -19,6 +19,7 @@ metadata:
 ## Execution & Boundaries
 - Assumir explicitamente. Perguntar, não adivinhar
 - Push back quando existir abordagem mais simples. Parar imediatamente se confuso
+- **Múltiplos caminhos = parar e perguntar:** se houver mais de um caminho lógico ou estrutural para resolver um problema, listar as opções e perguntar ao desenvolvedor qual seguir ANTES de escrever qualquer código (decisão Q21)
 - Tocar apenas no necessário. Não "melhorar" código adjacente
 - Estilo existente > gosto pessoal. Não refatorar o que funciona
 - Se convenção parecer prejudicial, surface. Não faça fork silencioso

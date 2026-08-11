@@ -141,3 +141,20 @@ Registro de escolhas arquiteturais tomadas durante o grill (2026-07-27), com jus
 ## Q19: Definition of Done
 
 **Escolha: Bot respondendo com dados reais** — os 5 comandos (`/start`, `/unidades`, `/buscar`, `/disponiveis`, `/curso`) funcionando no Telegram real com token BotFather; API validada via curl; docs + Trello atualizados; corpos das funções implementados pelo Maia conforme contratos de `scripts/todo.js` (dinâmica co-piloto).
+
+## Q20: Parser do XML de ofertas
+
+**Escolha: `fast-xml-parser` (v5)** em vez de regex manual para `parseOfertaXML` em `scripts/ofertas.js`.
+
+**Por quê:** Preferência por robustez estrutural em vez de zero-dependência: o parser cuida de CDATA, atributos e variação de formato; a regex quebraria silenciosamente se a estrutura do XML mudar (campos virariam `''`). Interface de `parseOfertaXML` inalterada (`{nomeCampo: valor}`); o mapeamento para os 15 campos do contrato continua obrigatório em `mapearOferta`.
+
+**Descobertas de config (validado com XML real da Senac):**
+- CDATA direto cai em `#text` por padrão; select com `<option>` cai em `option`.
+- `parseTagValue: false` mantém valores como string (o contrato exige 15 campos string — sem isso `9900356116` vira number).
+- `ignoreAttributes: false` expõe os atributos como `@_name` (o nome do campo).
+
+## Q21: Obrigação de consulta (múltiplos caminhos)
+
+**Escolha: Parar e perguntar** — se houver mais de um caminho lógico ou estrutural para resolver um problema, a IA é obrigada a listar as opções e perguntar ao desenvolvedor qual seguir ANTES de escrever qualquer código.
+
+**Por quê:** Escolher silenciosamente entre abordagens equivalentes (regex vs lib, fetch vs axios, monólito vs módulos) gera retrabalho e decisões que o desenvolvedor não defendeu. A regra vale para qualquer tarefa e está incorporada ao `CLAUDE.md`, `.omp/RULES.md` e `agents-directives.md`.

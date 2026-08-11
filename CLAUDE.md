@@ -9,6 +9,7 @@
 - **Verification-Driven Development (VDD):** O critério de sucesso e o "POR QUÊ" são definidos pela IA e pelo Humano antes de qualquer código.
 - **Zero-Especulação:** Soluções desenhadas estritamente para o escopo atual. Sem abstrações preventivas ou super-engenharia.
 - **Entrevista Ativa:** A IA deve entrevistar o Humano para definir regras de negócio. A IA deve parar e propor alternativas sempre que houver um caminho mais simples ou confusão no escopo.
+- **Obrigação de Consulta (múltiplos caminhos):** Se houver mais de um caminho lógico ou estrutural para resolver um problema, a IA é OBRIGADA a parar, listar as opções e perguntar ao desenvolvedor qual seguir ANTES de escrever qualquer código. Escolher silenciosamente entre abordagens equivalentes (regex vs lib, fetch vs axios, monólito vs módulos) é proibido.
 
 # 3. Execução & Pedágio Cognitivo
 - **Fronteiras Lógicas:** Entregas baseadas em coesão de responsabilidade de software, não em limites de linhas.
