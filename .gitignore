@@ -14,3 +14,6 @@ docs/memory/sessions
 .agents/
 .claude/
 scripts/todo.js
+
+# Segredos do bot — token do BotFather
+.env

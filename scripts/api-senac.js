@@ -56,12 +56,7 @@ async function listarTemas() {
 	return data;
 }
 
-async function buscarOfertasCurso(
-	codigoFTOferta,
-	idUnidade,
-	cursoArticleId,
-	dataEfetivaOferta,
-) {
+async function buscarOfertasCurso(codigoFTOferta, idUnidade, cursoArticleId, dataEfetivaOferta,) {
 	const { data } = await api.get(
 		`/o/senac-oferta-services/ofertasPorCategoryIds/${CONFIG.api.groupId}`,
 		{

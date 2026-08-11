@@ -12,24 +12,22 @@ const {
 	listarTemas,
 } = require('./api-senac');
 
-// Config ---------------------------------------------------------------
-const CONFIG = JSON.parse(
-	fs.readFileSync(path.join(__dirname, '../config.json'), 'utf-8'),
-); //Pegando configuraçoes do json de configs
+// Config ---------------------------------------------------------------------------------------------------
+
+const CONFIG = JSON.parse(fs.readFileSync(path.join(__dirname, '../config.json'), 'utf-8')); //Pegando configuraçoes do json de configs
 const DRY_RUN = process.argv.includes('--dry-run'); //Guardando escolha do usuario se dry run ou nao
 
-// Helpers---------------------------------------------------------------
+// Helpers ---------------------------------------------------------------------------------------------------
 function sleep(ms) {
 	return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-//Função para poder realizar qoperações de requisição com retry estruturado.
-/**
- * 
+/**Função para poder realizar qoperações de requisição com retry estruturado.
+ *
  * @param {function(): Promise<*>} operacao - função assíncrona a ser executada.
  * @param {number} tentativas - numero de tentativas a serem feitas.
  * @param {string} descricao - Texto que descreve a operação.
- * @param {Array<{descricao: string, erro: string}>} falhas - Lista de falhas armazenadas no processo 
+ * @param {Array<{descricao: string, erro: string}>} falhas Lista de falhas armazenadas no processo
  * @returns {Promise<*|null>} O resultado da operação com sucesso ou null se falhar após os retries.
  */
 async function executarComRetentativa(operacao, tentativas, descricao, falhas) {
@@ -55,9 +53,7 @@ async function executarComRetentativa(operacao, tentativas, descricao, falhas) {
 				await sleep(espera);
 			} else {
 				console.log('');
-				console.error(
-					`  ❌ [${descricao}] esgotadas ${tentativas} tentativas: ${err.message}`,
-				);
+				console.error(`  ❌ [${descricao}] esgotadas ${tentativas} tentativas: ${err.message}`);
 				falhas.push({ descricao, erro: err.message });
 				return null;
 			}
@@ -65,18 +61,21 @@ async function executarComRetentativa(operacao, tentativas, descricao, falhas) {
 	}
 }
 
+/** Processa lista de cursos disponiveis para obter as demais informações das ofertas
+ *
+ * @param {Array<Object>} cursos Lista de cursos 'crus'(sem as ofertas) (campos: title, codigoFt, articleId ....)
+ * @param {Object} tema Tema mercadológico (campos: nome, articleId)
+ * @param {String} idUnidade Id da unidade do Senac
+ * @param {Array<{descricao: string, erro: string}>} falhas - Acumulador de falhas
+ * @param {Object} unidade Dados da unidade
+ * @returns {Promise<Array<CursoProcessado>} Curso pronto para o Json final
+ */
 async function extrairCurso(cursos, tema, idUnidade, falhas, unidade) {
 	let cursosProcessados = [];
 
 	for (const curso of cursos) {
 		const ofertas = await executarComRetentativa(
-			() =>
-				buscarOfertasCurso(
-					curso.codigoFT,
-					idUnidade,
-					curso.articleId,
-					curso.dataEfetivaFT,
-				),
+			() => buscarOfertasCurso(curso.codigoFT, idUnidade, curso.articleId, curso.dataEfetivaFT),
 			3,
 			`ofertas de "${curso.title}"`,
 			falhas,
@@ -91,9 +90,7 @@ async function extrairCurso(cursos, tema, idUnidade, falhas, unidade) {
 			codigoFT: curso.codigoFT,
 			articleId: curso.articleId,
 			url: curso.url ? `${CONFIG.api.baseUrl}${curso.url}` : null,
-			imagemURL: curso.imagemURL
-				? `${CONFIG.api.baseUrl}${curso.imagemURL}`
-				: null,
+			imagemURL: curso.imagemURL ? `${CONFIG.api.baseUrl}${curso.imagemURL}` : null,
 			modalidade: curso.modalidade || [],
 			formato: curso.formatos || [],
 			tags: curso.tags || [],
@@ -107,13 +104,20 @@ async function extrairCurso(cursos, tema, idUnidade, falhas, unidade) {
 	return cursosProcessados;
 }
 
+/**Busca todos os cursos de um tema com paginação
+ *
+ * @param {String} idTema id da tema mercadológico
+ * @param {String} idTipoCurso id do tipo de curso (livre/técnico)
+ * @param {String} idUnidade id da unidade do Senac
+ * @returns {Promise<Array<Object>>} Lista completa com os cursos extraidos do tipo e tema na unidade
+ */
 async function buscarCursosPorCategoria(idTema, idTipoCurso, idUnidade) {
 	const temInscricao = CONFIG.filtros.temInscricoesAbertas ? 1 : 0;
 	const temBolsa = CONFIG.filtros.temBolsaEstudo ? 1 : 0;
 
 	let todosCursos = [];
 	let start = 0;
-	const limit = 100;
+	const limit = 100; //transformar em parametro?
 
 	while (true) {
 		let data;
@@ -143,6 +147,14 @@ async function buscarCursosPorCategoria(idTema, idTipoCurso, idUnidade) {
 	return todosCursos;
 }
 
+/**Extrai lista de cursos do tema
+ *
+ * @param {Array<Object>} temas Lista de objetos que contem os cursos
+ * @param {String} idUnidade id da unidade do Senac
+ * @param {String} idTipoCurso id do tipo de curso (livre/técnico)
+ * @param {Array<{descricao: string, erro: string}>} falhas Lista de falhas armazenadas no processo
+ * @returns {Object<Array<{tema: Object, cursos: Array}>}
+ */
 async function agruparCursosPorTema(temas, idUnidade, idTipoCurso, falhas) {
 	const resultado = [];
 	for (const tema of temas) {
@@ -168,35 +180,35 @@ async function agruparCursosPorTema(temas, idUnidade, idTipoCurso, falhas) {
 
 	return resultado;
 }
-
-async function processarCursosDaUnidade(
-	temas,
-	idUnidade,
-	idTipoCurso,
-	unidade,
-	falhas,
-) {
+/**Processa todos os cursos de uma unidade, agrupados por tema
+ *
+ * @param {Array} temas Lista de temas mercadológicos
+ * @param {String} idUnidade Contem o Id da unidade
+ * @param {String} idTipoCurso Número do id do tipo de curso (livre/técnico)
+ * @param {Object} unidade Objeto contendo dados da unidade
+ * @param {Array<{descricao: string, erro: string}>} falhas Lista de falhas armazenadas no processo
+ * @returns {Array} Lista de cursos processados da unidade
+ */
+async function processarCursosDaUnidade(temas, idUnidade, idTipoCurso, unidade, falhas) {
 	console.log(`\n🏫 ${unidade.nome} (${unidade.friendlyUrl})`);
 
 	console.log(`  ${temas.length} áreas/temas encontradas`);
 
 	const cursosDaUnidade = [];
-	const agrupados = await agruparCursosPorTema(
-		temas,
-		idUnidade,
-		idTipoCurso,
-		falhas,
-	);
+	const agrupados = await agruparCursosPorTema(temas, idUnidade, idTipoCurso, falhas);
 
 	for (const { tema, cursos } of agrupados) {
-		cursosDaUnidade.push(
-			...(await extrairCurso(cursos, tema, idUnidade, falhas, unidade)),
-		);
+		cursosDaUnidade.push(...(await extrairCurso(cursos, tema, idUnidade, falhas, unidade)));
 	}
 
 	return cursosDaUnidade;
 }
 
+/**Executa o fluxo de funções para extração dos cursos
+ *
+ * @param {Array<{descricao: string, erro: string}>} falhas Lista de falhas armazenadas no processo
+ * @returns {Array} Lista de cursos pronta para o Json
+ */
 async function extrairTodosOsCursos(falhas) {
 	const todosOsCursos = [];
 
@@ -207,12 +219,7 @@ async function extrairTodosOsCursos(falhas) {
 		falhas,
 	);
 
-	const temas = await executarComRetentativa(
-		() => listarTemas(),
-		3,
-		'listar áreas/temas',
-		falhas,
-	);
+	const temas = await executarComRetentativa(() => listarTemas(), 3, 'listar áreas/temas', falhas);
 
 	if (!idTipoCurso || !temas) return [];
 
@@ -227,13 +234,7 @@ async function extrairTodosOsCursos(falhas) {
 
 		if (idUnidade === null) continue;
 
-		const cursos = await processarCursosDaUnidade(
-			temas,
-			idUnidade,
-			idTipoCurso,
-			unidade,
-			falhas,
-		);
+		const cursos = await processarCursosDaUnidade(temas, idUnidade, idTipoCurso, unidade, falhas);
 
 		todosOsCursos.push(...cursos);
 		console.log(`  Total: ${cursos.length} cursos em ${unidade.nome}`);
@@ -242,19 +243,17 @@ async function extrairTodosOsCursos(falhas) {
 	return todosOsCursos;
 }
 
-function logInicial() {
+function mostrarLogInicial() {
 	console.log('quis-curso-tem — Estágio 1: lista de cursos');
 	console.log(`Unidades: ${CONFIG.unidades.map((u) => u.nome).join(', ')}`);
 	console.log(`Tipo: ${CONFIG.tipoCurso}`);
 	if (DRY_RUN) console.log('[dry-run] Nenhum arquivo será escrito.\n');
 }
 
-function logFinal(falhas, todosCursos) {
+function mostrarLogFinal(falhas, todosCursos) {
 	// Sumário final
 	console.log(`\n${'='.repeat(50)}`);
-	console.log(
-		`📊 Total: ${todosCursos.length} cursos em ${CONFIG.unidades.length} unidade(s)`,
-	);
+	console.log(`📊 Total: ${todosCursos.length} cursos em ${CONFIG.unidades.length} unidade(s)`);
 
 	if (falhas.length > 0) {
 		console.log(`\n⚠️  ${falhas.length} falha(s):`);
@@ -270,13 +269,13 @@ function logFinal(falhas, todosCursos) {
 
 // Entry point---------------------------------------------------------------------------------------------------------------
 (async () => {
-	logInicial();
+	mostrarLogInicial();
 
 	const falhas = [];
 
 	let todosCursos = await extrairTodosOsCursos(falhas);
 
-	logFinal(falhas, todosCursos);
+	mostrarLogFinal(falhas, todosCursos);
 
 	process.exit(falhas.length > 0 ? 1 : 0);
 })();

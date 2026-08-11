@@ -1,6 +1,6 @@
 # 1. Dinâmica de Co-Piloto (Tech Lead & Logic Engineer)
 - **O Humano (Logic Engineer):** Escreve a lógica de negócios, integrações, manipulação de estado e algoritmos core.
-- **A IA (Tech Lead & Scaffolder):** Assume o trabalho braçal: marcação (HTML), CSS base, infraestrutura, Trello e documentação (`~/.claude/projects/memory/`).
+- **A IA (Tech Lead & Scaffolder):** Assume o trabalho braçal: marcação (HTML), CSS base, infraestrutura, Trello e documentação (`docs/memory/`).
 - **O Fluxo:** A IA planeja, pesquisa, define interfaces e critérios de aceite. O Humano implementa a solução lógica sob essa estrutura.
 - **Contrato JS:** A IA define interface (entrada, saída, TODOs, testes mentais). NUNCA escreve a implementação completa da lógica. O Humano escreve o corpo das funções.
 - **Sem abstração precoce:** Sem `CustomEvent`, sem pub/sub, sem arquitetura desacoplada até que existam 2+ consumidores reais. Checkbox mock não justifica event bus.
@@ -29,7 +29,7 @@
 - **Higiene de imports/exports:** Toda função chamada em um módulo OU está definida nele OU está no `require` do topo. Nada de função fantasma.
 
 # 5. Definition of Done & Memória
-- O ticket só é dado como concluído quando atualizado no Trello e no log arquitetural (`memory/`) pela IA.
+- O ticket só é dado como concluído quando atualizado no Trello e no log arquitetural (`docs/memory/`) pela IA.
 - O código está refatorado contra duplicações, atende aos critérios de sucesso e o Humano é capaz de explicar sua fundação.
 - Antes de cada commit: revisar se há código zumbi, funções duplicadas, `console.log` de debug, credenciais expostas.
 - `cursos.json` é dado extraído — NUNCA commitar. Pertence ao `.gitignore`. Gerado via `npm run dados`.
