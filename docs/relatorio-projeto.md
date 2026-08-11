@@ -1,9 +1,9 @@
 # Relatório — Quis Curso Tem
 
-> Gerado em 2026-08-05. Atualizado em 2026-08-08.
+> Gerado em 2026-08-05. Atualizado em 2026-08-08 e 2026-08-11 (reestruturação chatbot).
 
 ## Visão geral
-App vanilla (HTML+CSS+JS, zero framework) que lista **bolsas de estudo Senac SP** de 2 unidades (Penha, São Miguel Paulista). Dados **extraídos de API Liferay** → arquivo estático `cursos.json` → filtro por checkbox no navegador.
+Sistema que lista **bolsas de estudo Senac SP** de 2 unidades (Penha, São Miguel Paulista). Dados **extraídos de API Liferay** → `cursos.json` → servidos por **API Express** → consumidos por **bot do Telegram** (interface primária, decisão 2026-08-11). Frontend web arquivado em `legacy/web/`.
 
 ## Estágio 1 — Extração de dados (`scripts/cursos.js` + `scripts/api-senac.js`, `npm run dados`)
 
@@ -43,10 +43,9 @@ Funções:
 - `--dry-run` — testa sem escrever arquivo.
 
 ### Pendências (contratos em `scripts/todo.js`)
-- `buscarOfertasCurso` — implementar com template string correto (backticks) + return + parseOfertaXML
-- `parseOfertaXML` — parse de XML com 3 formatos (CDATA direto, option, texto puro)
-- `mapearOfertas` — transformar array cru em shape do contrato
-- `mapearOferta` — mapear 1 oferta para 15 campos do contrato
+- ✅ (wiring 2026-08-11) `buscarOfertasCurso` — return + export + `paramsSerializer: { indexes: null }` (sem colchetes; API devolve `{}` senão)
+- ⏳ `parseOfertaXML` — parse de XML com 3 formatos (CDATA direto, option, texto puro) — **corpo = Maia**, referência em `legacy/senac-api.js:56-98`
+- ⏳ `mapearOfertas` / `mapearOferta` — shape de 15 campos — **corpos = Maia** (stubs em `scripts/ofertas.js`)
 
 ## Estágio 2 — Frontend (`scripts/script.js`)
 
@@ -77,7 +76,7 @@ Funções e responsabilidade:
 
 ## Pontos de atenção (achados reais)
 
-1. **⚠️ `cursos.js` NÃO gera o formato que o frontend lê.** `cursos.js` escreve array plano `[{unidade, tema, curso, ...}]` (`cursos.js:236-237`). `cursos.json` real tem wrapper `{dataExtracao, totalCursos, unidades:[{nome, cursos:[...]}]}`. `script.js` lê `dados.unidades[].cursos` (`script.js:29-30`). **`npm run dados` hoje geraria arquivo que quebra a página** (TypeError `dados.unidades` undefined). O `cursos.json` atual deve ter vindo de versão não-commitada do gerador — desincronizado do git.
+1. **✅ RESOLVIDO (2026-08-11)** — `cursos.js` agora gera o wrapper correto `{dataExtracao, totalCursos, totalOfertas, unidades:[{nome, friendlyUrl, totalCursos, totalOfertas, cursos}]}` com escrita atômica (`gerarCursos`). `npm run dados` passou a apontar para `scripts/cursos.js` (antes rodava o legado).
 
 2. **Dados extra do JSON não usados:** `unidadeId`, `temaId`, `articleId`, `imagemURL`, `formato`, `tags`, e ofertas tem `totalVagas`, `precoVenda`, `precoDesconto`, `maxParcelas`. Frontend só usa `unidade`, `codigoFT`, `curso`, `url`, `ofertas` (e `erroOfertas`). Resto = colhido mas nunca renderizado.
 
@@ -96,3 +95,29 @@ Funções e responsabilidade:
 - `scripts/selecao.js` — zumbi
 - `config.json` — unidades, tipo, filtros, IDs Liferay, delays
 - `legacy/senac-api.js` — estágio 0 (extração + ofertas XML), superado por cursos.js
+
+## Estágio 3 — API Express + Bot Telegram (2026-08-11)
+
+### API (`scripts/api.js`, `npm run api`)
+Express na porta `config.servidor.porta` (3000). Endpoints: `GET /` (auto-descrição), `GET /cursos` (wrapper completo), `GET /cursos?q=&limite=` (busca), `GET /cursos?disponiveis=1` (inscrições abertas), `GET /cursos/:codigoFT` (detalhe mesclado), `GET /unidades`. Erros JSON `{erro}` (400/404/503/500). Consultas delegadas a `scripts/dados-cursos.js` (cache de `cursos.json` invalidado por mtime).
+
+**Agendador diário:** tick de 60 s; `HH:MM` local == `config.agendador.hora` (03:00) → `gerarCursos()` (extração completa) com guarda anti-concorrência. Só roda enquanto o processo da API estiver aberto (deploy local — decisão Q18).
+
+### Bot (`bot/bot.js` + `bot/mensagens.js`, `npm run bot`)
+`node-telegram-bot-api` com polling; token em `.env` (`TELEGRAM_TOKEN`, gitignored — template em `.env.example`). Comandos: `/start`, `/help`, `/unidades`, `/buscar <termo>` (top 5), `/disponiveis`, `/curso <codigoFT>`. Respostas em texto HTML (`parse_mode: 'HTML'`, decisão Q15) com botão inline "Inscrever-se" quando `dataAberturaBolsa <= hoje` (regra BUS-03). Formatação em `bot/mensagens.js` (escaparHtml, formatarData DD/MM/AAAA, formatarPreco pt-BR, listas, botão) — corpos pendentes do Maia.
+
+### Dados
+- `scripts/ofertas.js` (novo) — `parseOfertaXML`, `mapearOfertas`, `mapearOferta` (15 campos) — stubs com contratos, corpos do Maia.
+- `scripts/dados-cursos.js` (novo) — `carregarCursos`, `listarUnidades`, `buscarCursos`, `cursoPorCodigoFT` (mescla unidades), `cursosDisponiveis` — stubs com contratos, corpos do Maia.
+- `scripts/cursos.js` — `gerarCursos()` exportado, wrapper com `totalOfertas`, escrita atômica (`.tmp` + `rename`), nunca sobrescreve com 0 cursos.
+- `scripts/api-senac.js` — `buscarOfertasCurso` corrigida (return, export, `paramsSerializer: { indexes: null }`).
+
+### Limpeza
+- Frontend web movido para `legacy/web/` (git mv) — arquivado, não mantido.
+- Removidos: `legacy/teste.js` (quebrado), `scripts/tsconfig.json` + dep `typescript` (órfãos), artefato de sessão na raiz.
+- `npm run dados` agora roda `scripts/cursos.js` (substitui `legacy/senac-api.js`, que fica como referência).
+
+### Verificação (2026-08-11)
+- `npm run dados:dev` — 146 cursos, 0 falhas, exit 0 (sem ReferenceError; ofertas vazias até os corpos do Maia).
+- `node --check` em todos os módulos novos; teste puro de `chegouHoraAgendada`.
+- Pendente (pós-corpos do Maia): `npm run dados` real + `jq` das ofertas, curl da API, ponta a ponta no Telegram.

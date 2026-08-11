@@ -97,3 +97,47 @@ Registro de escolhas arquiteturais tomadas durante o grill (2026-07-27), com jus
 **Escolha: VDD (Verification-Driven Development), micro-deliverables, human-in-the-loop.**
 
 **Por quê:** Cada bloco de 50-80 linhas é revisado e aprovado antes do próximo. Evita retrabalho. Code review por agente externo (`cavecrew-reviewer`) antes de commitar.
+
+---
+
+# Grill 2026-08-11 — Reestruturação para chatbot do Telegram
+
+## Q13: Relação bot ↔ API
+
+**Escolha: HTTP, processos separados** — `bot.js` e `api.js` rodam independentes; o bot consulta a API com axios em `127.0.0.1:3000`.
+
+**Por quê:** Separação de preocupações — a API serve qualquer cliente (bot hoje, outros depois) e o bot fica magro. Se a API cair, o bot avisa e não trava.
+
+## Q14: Atualização dos dados
+
+**Escolha: Agendador diário** dentro do processo da API (hora configurável em `config.json`, default 03:00), além do `npm run dados` manual.
+
+**Por quê:** Dados de bolsa mudam todo dia; extração manual esquece. **Tensão aceita:** o agendador só dispara enquanto o processo da API estiver aberto (deploy local) — limitação documentada no README. Escrita atômica (`.tmp` + `rename`) garante que o arquivo nunca fique corrompido.
+
+## Q15: Formato das respostas do bot
+
+**Escolha: Híbrido** — texto HTML (`parse_mode: 'HTML'`: `<b>`, `<a href>`) + botão inline "Inscrever-se" (URL) no `/curso` quando `dataAberturaBolsa <= hoje`.
+
+**Por quê:** O Telegram renderiza HTML no próprio app (não é página web). Botão dá atalho de 1 toque para o portal. Contrato: todo dado de origem (nome, tema, unidade) passa por `escaparHtml` antes de entrar no HTML.
+
+## Q16: Conteúdo do `/buscar`
+
+**Escolha: Top 5** (`config.json` → `bot.maxResultados`) — nome em negrito, unidade(s), tema, link "Ver curso", sugestão `Detalhes: /curso <codigoFT>`. Sem paginação.
+
+**Por quê:** Mensagens curtas e escaneáveis; o detalhe completo fica no `/curso`.
+
+## Q17: Destino do frontend web
+
+**Escolha: Arquivar em `legacy/web/`** — `git mv` de `index.html`, `css/`, `scripts/script.js`.
+
+**Por quê:** Foco 100% no bot. Cards de web (BUS-02/03, CARD-01, MAP-01) arquivados no Trello. Regras de formatação e de disponibilidade do web continuam valendo como fonte das regras do bot.
+
+## Q18: Deploy
+
+**Escolha: Local agora, deploy depois** (Oracle free VPS etc. fica para iteração futura).
+
+**Por quê:** MVP valida o fluxo com token real do BotFather sem infraestrutura. Agendador documentado como "roda com processo aberto".
+
+## Q19: Definition of Done
+
+**Escolha: Bot respondendo com dados reais** — os 5 comandos (`/start`, `/unidades`, `/buscar`, `/disponiveis`, `/curso`) funcionando no Telegram real com token BotFather; API validada via curl; docs + Trello atualizados; corpos das funções implementados pelo Maia conforme contratos de `scripts/todo.js` (dinâmica co-piloto).

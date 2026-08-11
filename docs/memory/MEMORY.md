@@ -6,3 +6,5 @@
 - [Sessão 2026-08-03](sessao-2026-08-03.md) — Fix paginação cursos.js, scaffold BUS-01 HTML/CSS, refactor script.js
 - [Sessão 2026-08-05](sessao-2026-08-05.md) — Revisão relatório, bug schema adiado, commit 97f78e5, scaffold BUS-03 filtro disponíveis
 - [Sessão 2026-08-08](sessao-2026-08-08.md) — Modularização DADOS-01, api-senac.js, contratos todo.js, análise de práticas
+- [Sessão 2026-08-10](sessao-2026-08-10.md) — Configuração do MCP Trello (aepod/trello-mcp), credenciais novas
+- [Sessão 2026-08-11](sessao-2026-08-11.md) — Grill chatbot (Q13–Q19), reestruturação bot-first, API Express + agendador, web arquivado

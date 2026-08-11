@@ -1,63 +1,100 @@
 # Quis Curso Tem
 
-Busca bolsas de estudo e cursos livres do Senac SP filtrando por unidade.
+Busca bolsas de estudo e cursos livres do Senac SP, agora via **bot do Telegram** como interface primária.
 
 Consome a API REST interna do portal Senac (Liferay) — sem navegador, sem scraping.
 
 ## Kanban do projeto
 - https://trello.com/invite/b/6a6e18b6b11207994c4f4173/ATTI43496975d463750c318d9a724eab32108805D1E5/quis-curso-tem
-## Diagrama de arquitetura
 
-[![Abrir no draw.io](https://img.shields.io/badge/draw.io-Abrir%20diagrama-blue)](https://app.diagrams.net/?grid=0&pv=0&border=10&edit=_blank#create=%7B%22type%22%3A%22xml%22%2C%22compressed%22%3Atrue%2C%22data%22%3A%227Vxdc%2BMoFv01VGUe7EIgOfajv7ST3aQ7O0lmp%2BYNS9imGws3Qmlnf%2F0W6COWwIm9nVhOOamutAQIFJ1zr7iHiwAerzZzxilAcClSBfAEIETW627MyEKSVdpNqAIIAQRXImZzRuO8DYKo14H9DvTvIQR4WPzqQgj%2FztuTBU2KDsecZDHNix%2BpTJlIil78LuxCXYGnAA4BgvofHhejAwQTsqJ526H8kTFFVSYJQPDfGUsBguNMpgIgeE9XefesuD8if3R%2BRKrZdTnAavMPSdbLGxFTDhCMN%2FlVHoIw7yd%2Bykv6ZcFCll17zwV37L%2FF3Xlls4zFNK01VEJwxdb1wkgkCY1UrYxIKX7Wm80Fr4%2B6JgtqFdxFhNul%2F2GxWpZ3V%2F4ZuuJ3yhbLYuheUFSsSNm4KEiXJBY%2Ft4rs51g%2BTSmE2ln9%2FMjHlPMtiPJxwsMvrP5GWTGs3tdh3SmmeElOwrPiQboIBsEUgT4EAx8gWOOjeWDqqURB0Y0CeLRUKw7wxAN4lCopvtOx4EICPElEQgEezRnnjSLC2UIbR0QTRSXAo0cqFYsIHxYVKxbH3FwsElXwT4OTnxe34BXnZecAYQgxuYQAjyozVHSz83l6LwFumRIVK6rkE0Cw6BH1CxIVVuQF%2BenPZ0risslyi41%2BUUYKK1hUPe%2FFFIDCAt3%2Fhwczselo3JpMsNCVIkti4wj1c%2F65ZIrerUmka39Ksq4Dv40xQHiKQxROLEIAhL2gF4xhVVNar4Y2JumyGu8Y%2BOE6fJfQgg8FDvgwfFv8DgCPk5kTvOlGSRIRbcIXX0RMu99S08lIW%2FCGifS3to3Xw68bb8WNY4DvN8Dv2eBjB%2FilobRiu2TNPAt7rwsQfEhYTPTko%2Ba8I6LoQkhGboUMJaNJzJ8e%2FrjWN3o5Snm2AJeTN7X70Py8aPdbnBhskYnTuaZjuiYRSxbX5mzSPxYXgrofh32bDMjlCd6WDIcxAVlMQJoJ92yt3YDhQvla3%2BYEi3ULU3Mr5Bexop8MsBngfwQGYIsBuJtP4ki6wxPoSXv4KCIyyziRT1exvm8f4gH%2BZIHNgv5HYIFvscDvlrZv0cAU3go5Lt8M6VisQsaV1G0%2FGdBgAEIfgQGBxYBAM%2BDrnEpleQKRlz5zwDgBBC%2F%2Burm2Z4mfFEC9dihwGAsikczZwuJBXtz9loqkQYMsnzCmAI2NyiOy9VWcn8zfxx30p3aQYWr6IWxwwYOuMKMZPbRABux9BDIQKZ%2BjxC0AaRIPtfgG8GTGRfT9fskSVwhYBuX4RbxoEoeM8xoYNLZ0u1%2BHQlJOFHusd%2Bx6sPv0%2FTzCrWCJ2i3mYOzXR0pFJiNaXLUHiq%2BMh%2F1XxlNELqg6dLyCO9Xje2cxoka1bcdjJhql47lI1lpXlJk%2BiUl8AnpE35Yf6p7oyI4G9ep0QAPb0wycYlTLWuLcFpXfVkrsh8F04PJEaHo5wehEpMSmnGRriZVseEJaogO8UIpE0STWZvsnSRjneiHqn3cAwRsxY5x2QiZT1boB7yMoVgw5CgWC1xVF12pAq4qiQatJAZbEdNPNq2qTxpRyGhHRqU8eV2RN8qNZlkbFYVSEn0eJJyqcTzGewMEe6uLlScWUUZrab3RdFhoo0645qVFjTThVxPQ3NAulOTVyjzHXHgMgiBFcbz454eBE4Fh7Oi1OfLMpkUaSrZWhhTkqVp22WDGnKloWDoFES5ofTkSUrWiiQkkW%2Bv9PRjgYMUCtMOIwUsx5thEdBzVCXQGw7ixa0uj7TGzMIUkW1SJVD%2Bi%2FEUZCew75UL1TGrWJefDyQfJmnREqiGyUkoXM1kRqgUvEbCEa1SuRKCKvWarchIZf4p0X9t3z1P5ojP2hHX68KHAcb9bSkLv8fT1Rm4EHJzPKO0vxSKVFvWmqdIRpcr1MfbEOPhdRlnYeWcpmJhPMpLookTc1v5jGQUsNjolL%2B%2BFpz%2Fy0RYv%2BnrRAbcejNI0EXxLbJb2tteNpEAYua78ceeHwVKLSekTiQxvEnucAcdBqULoTwWlVAe9plLCIvIedFtOAvWLQPTLSKj60IFf70I5BPVdKU6tWS%2B2clqskZpFx0qkiikUCoB7XqMwkQL2FPlpL2llQSWKT9JQab55S%2BchiIY%2B1jlVhu2NGWbn8NrDHDuxdEtQbZyMeArydwjL5egMQHBEVLVmysFG%2FaMYOZwm11xCLPwLWdrLKTU0caCJdaAWjc8QXXb5uy67FgBbhtbNQblVn9If2zbFYsYSJ32yMp190%2FfD2CqBQ0Wh5lsaM%2Bx%2FPmO2Mkz8nExvfuyWbq45RUs4QWH%2FwuhWf5PYAo%2Bq8c%2FwUhngKXRBOe4EHT3ODQOB9iPjJDV%2BuyCFo5ssPaUYkE22rHPvETxUfjvLiDZqI%2B%2FsFUGVeUDsq7I5NAXd6uY6JREukTdf8vIR3FMdcofhqllcLoVLg21q7c3rlt2XW8x3J%2FiO94OpA90IbslG%2BjfSpyMKRcXMOSHu916F2T67aw3pHWv%2BYSJOoG4mVDXhi9nEUcC%2BF1N79PG0bDfZA3PXSbhHxHSn8V0kaSfpIZSelDhs3KxV67SIzWXWKnKeJ%2B3gfEw9OCvAdGfu3QirCbajTdTelCYm6M3mWEAd7ePHe%2B5v0gVnY5bTsFzKw0YvYnGQGtiPV2WtaaG%2Bf1GpXR00eNDty5kwfMSWazO0w%2BTwxR69BtS%2Fm1vv89DC3906eJ%2BY%2BfCPMrVf66WHuf2JevIrh22BuveOPgvnh4miqSPT9fcXR6Xgahs7NcoHfm14OLSp5JyCO9hxb45ziKHpbqewA%2BAx0HeXar%2BT8aIo%2Bu9QJq7%2Ff31wHJr9gRZI8HaGoGd%2FdmY7KfRJV9nNRb%2FZNTO96ea8XW%2FmwjoXs6pqvX2qpD0W5WWIp7u9fJJkRs7XqXlLORevbMQa2cluR9ShRYIONyI4QApemh46w2GKa7fh6WOnAnr%2FTVv9GHEBh%2BZm4vKK4wHzOzpT8Dw%3D%3D%22%7D)
+## Como o programa funciona (3 processos)
 
-> Ou abra o arquivo local: `poc-arquitetura.drawio`
+| Processo | Comando | Papel |
+|----------|---------|-------|
+| Extração | `npm run dados` | Consulta a API do Senac e grava `cursos.json` |
+| API Express | `npm run api` | Serve `cursos.json` por HTTP (porta 3000) + agendador diário de extração |
+| Bot Telegram | `npm run bot` | Escuta comandos no Telegram e consulta a API |
+
+O bot **nunca lê `cursos.json` diretamente** — ele conversa com a API por HTTP
+(axios). O frontend web antigo foi **arquivado** em `legacy/web/` (referência
+não mantida).
+
+- **Guia do código**: [`CODIGO.md`](CODIGO.md) — explica cada arquivo em linguagem simples
+- **Fluxograma**: [`docs/fluxo-bot.drawio`](docs/fluxo-bot.drawio) e [`poc-arquitetura.drawio`](poc-arquitetura.drawio)
 
 ## Stack
 
-- **Extração:** Node.js + Axios (consumo de API REST + parse XML)
-- **Frontend:** Vanilla JS (mobile-first, `DocumentFragment`, sem framework)
-- **Mapa:** Leaflet (planejado — MAP-01)
+- **Extração:** Node.js + Axios (API REST + parse XML)
+- **API:** Express 5 (`scripts/api.js`)
+- **Bot:** `node-telegram-bot-api` (polling) + formatação HTML (`bot/`)
+- **Dados:** `cursos.json` (JSON estático pré-gerado, gitignored)
 
 ## Estrutura
 
 ```
 .
-├── index.html              # Frontend SPA
-├── css/styles.css          # Estilos mobile-first
+├── bot/
+│   ├── bot.js           # Bot Telegram — polling + handlers de comando
+│   └── mensagens.js     # Formatação HTML, preços, datas, botão de inscrição
 ├── scripts/
-│   ├── script.js           # Frontend — fetch, cache, renderização
-│   ├── cursos.js           # Orquestrador da extração (Node)
-│   ├── api-senac.js        # Módulo cliente HTTP + endpoints Liferay
-│   └── todo.js             # Contratos das funções pendentes (gitignored)
+│   ├── api-senac.js     # Cliente HTTP da API Liferay do Senac
+│   ├── ofertas.js       # Parse XML + mapeamento de ofertas (15 campos)
+│   ├── cursos.js        # Orquestrador da extração (gerarCursos, escrita atômica)
+│   ├── dados-cursos.js  # Consultas sobre cursos.json (busca, detalhe, disponíveis)
+│   ├── api.js           # API Express (endpoints + agendador diário)
+│   └── todo.js          # Contratos das funções pendentes (gitignored)
 ├── legacy/
-│   ├── senac-api.js        # Extrator monolítico (referência)
-│   ├── selecao.js          # UI checkboxes (substituído por script.js)
-│   ├── scout-api.js        # Playwright page inspector (obsoleto)
-│   └── senac.js            # Playwright scraper (obsoleto)
-├── docs/
-│   ├── api_documentacao.md # Documentação dos endpoints do Senac
-│   ├── exemplo-output-curso.json
-│   └── fluxo-script.drawio # Diagrama do fluxo de extração
-├── config.json             # Unidades, filtros e parâmetros da API
-└── package.json
+│   ├── web/             # Frontend web arquivado (index.html, css, script.js)
+│   └── senac-api.js     # Extrator monolítico (referência)
+├── docs/                # Decisões, memórias, diagramas, sessões
+├── config.json          # Unidades, filtros, API, servidor, bot, agendador
+├── .env.example         # Template do token do bot (copiar para .env)
+└── cursos.json          # Dado extraído (gerado, NUNCA commitado)
 ```
 
-## Uso
+## Setup
 
 ```sh
-# Instalar dependências
+# 1. Instalar dependências
 npm install
 
-# Extrair dados das unidades configuradas → cursos.json
+# 2. Token do bot (um com o @BotFather)
+cp .env.example .env        # editar .env e preencher TELEGRAM_TOKEN
+
+# 3. Extrair os dados (cursos + ofertas → cursos.json)
 npm run dados
 
-# Abrir index.html no navegador (ou servir com qualquer static server)
-python3 -m http.server 8080
+# 4. Subir a API (deixe rodando)
+npm run api
+
+# 5. Em outro terminal, subir o bot (deixe rodando)
+npm run bot
 ```
+
+> O agendador da API roda a extração automaticamente todos os dias às 03:00
+> (hora local, configurável em `config.json` → `agendador.hora`) — mas **só
+> enquanto o processo da API estiver aberto**. Para extrair manualmente a
+> qualquer momento: `npm run dados`. `npm run dados:dev` roda em modo
+> `--dry-run` (não grava arquivo).
+
+## Comandos do bot
+
+| Comando | O que faz |
+|---------|-----------|
+| `/start` | Boas-vindas + lista de comandos |
+| `/help` | Lista de comandos |
+| `/unidades` | Unidades atendidas |
+| `/buscar <termo>` | Busca cursos por termo (top 5, com link) |
+| `/disponiveis` | Cursos com inscrições abertas agora |
+| `/curso <codigoFT>` | Detalhes do curso: datas, horários, vagas, preços + botão "Inscrever-se" |
+
+As respostas usam texto HTML (`<b>`, `<a href>`) que o Telegram renderiza no
+app. O botão "Inscrever-se" aparece quando a oferta tem
+`dataAberturaBolsa <= hoje` e leva direto ao portal do Senac.
 
 ## Configuração
 
-Editar `config.json` para alterar unidades ou filtros:
+`config.json`:
 
 ```json
 {
@@ -66,40 +103,49 @@ Editar `config.json` para alterar unidades ou filtros:
     { "friendlyUrl": "senac-sao-miguel-paulista", "nome": "Senac São Miguel Paulista" }
   ],
   "tipoCurso": "Livre",
-  "filtros": {
-    "temInscricoesAbertas": true,
-    "temBolsaEstudo": true
-  }
+  "filtros": { "temInscricoesAbertas": true, "temBolsaEstudo": true },
+  "servidor": { "porta": 3000 },
+  "bot": { "maxResultados": 5 },
+  "agendador": { "hora": "03:00" }
 }
 ```
 
+## API local (Express)
+
+- `GET /` — lista de endpoints
+- `GET /cursos` — wrapper completo de `cursos.json`
+- `GET /cursos?q=<termo>&limite=<n>` — busca textual (top N)
+- `GET /cursos?disponiveis=1` — cursos com inscrição aberta
+- `GET /cursos/:codigoFT` — detalhe do curso (ofertas mescladas entre unidades)
+- `GET /unidades` — unidades
+
+Erros em JSON `{ "erro": "..." }` com status 400/404/503/500.
+
 ## API do Senac SP
 
-O portal usa Liferay com endpoints REST não documentados publicamente. O extrator realiza 5 chamadas por curso:
+O portal usa Liferay com endpoints REST não documentados publicamente. O
+extrator realiza 5 chamadas por curso:
 
 1. `categoriaPorFriendlyURL/{slug}` — ID da unidade
 2. `idTipoCursoPorNome/{groupId}/{nome}` — ID do tipo de curso
 3. `categories?vocabularyIds=...` — lista de áreas/temas
 4. `cursosPorCategoriasComFiltrosBolsaECompra/...` — cursos por categoria
-5. `ofertasPorCategoryIds/{groupId}` — ofertas/turmas (XML)
+5. `ofertasPorCategoryIds/{groupId}` — ofertas/turmas (XML; exige `paramsSerializer: { indexes: null }`)
 
 Detalhes completos em [`docs/api_documentacao.md`](docs/api_documentacao.md).
 
-## Arquitetura da busca
-
-Índice estático pré-gerado (`cursos.json`) carregado no browser. Busca textual com tags (BUS-02) filtra em memória.
-Para escala (50+ unidades), migrar para API server-side — registrado em [TECH-01](https://trello.com/b/vNCkaTsu/quis-curso-tem).
-
-## Schema de saída
+## Schema de saída (`cursos.json`)
 
 ```json
 {
-  "dataExtracao": "2026-07-29T21:54:55.448Z",
+  "dataExtracao": "2026-08-10T12:40:31.831Z",
   "totalCursos": 170,
+  "totalOfertas": 224,
   "unidades": [{
     "nome": "Senac Penha",
     "friendlyUrl": "senac-penha",
     "totalCursos": 76,
+    "totalOfertas": 104,
     "cursos": [{
       "curso": "Excel Avançado",
       "codigoFT": 21417,
@@ -119,3 +165,19 @@ Para escala (50+ unidades), migrar para API server-side — registrado em [TECH-
   }]
 }
 ```
+
+Escrita atômica (`.tmp` + `rename`): o arquivo nunca fica pela metade; se uma
+extração falhar por completo, o arquivo anterior é mantido.
+
+## Arquitetura da busca
+
+Busca server-side: a API consulta `cursos.json` em memória (cache invalidado
+por mtime). Para escala (50+ unidades), migração para banco de dados
+permanece registrada em [TECH-01](https://trello.com/b/vNCkaTsu/quis-curso-tem).
+
+## Documentação adicional
+
+- [`CODIGO.md`](CODIGO.md) — guia do código, arquivo por arquivo
+- [`docs/user-decisions.md`](docs/user-decisions.md) — decisões do grill (Q1–Q19)
+- [`docs/MEMORY.md`](docs/MEMORY.md) — memória do projeto
+- [`docs/api_documentacao.md`](docs/api_documentacao.md) — endpoints do Senac
