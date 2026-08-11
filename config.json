@@ -21,5 +21,14 @@
     "timeoutMs": 30000,
     "delayEntreTemasMs": 100,
     "delayEntreOfertasMs": 100
+  },
+  "servidor": {
+    "porta": 3000
+  },
+  "bot": {
+    "maxResultados": 5
+  },
+  "agendador": {
+    "hora": "03:00"
   }
 }
