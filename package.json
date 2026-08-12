@@ -7,7 +7,8 @@
     "dados": "node scripts/cursos.js",
     "dados:dev": "node scripts/cursos.js --dry-run",
     "api": "node scripts/api.js",
-    "bot": "node --env-file=.env bot/bot.js"
+    "bot": "node --env-file=.env bot/bot.js",
+		"test": "node --test 'testes/**/*.test.js'"
   },
   "dependencies": {
     "axios": "^1.18.1",
