@@ -20,8 +20,7 @@ Os processos 2 e 3 rodam **separados**: o bot conversa com a API por HTTP
 (`axios`), nunca lê `cursos.json` diretamente. Se a API cair, o bot avisa
 "API fora do ar".
 
-- **Guia do código**: [`CODIGO.md`](CODIGO.md) — explica cada arquivo em linguagem simples
-- **Fluxograma**: [`docs/fluxo-bot.drawio`](docs/fluxo-bot.drawio) e [`poc-arquitetura.drawio`](poc-arquitetura.drawio)
+- **Guia do código + fluxograma**: [`docs/memory/ARCHITECTURE.md`](docs/memory/ARCHITECTURE.md) — arquivo por arquivo + diagrama Mermaid
 
 ## Stack
 
@@ -49,7 +48,6 @@ Os processos 2 e 3 rodam **separados**: o bot conversa com a API por HTTP
 │   └── senac-api.js     # Extrator monolítico (referência)
 ├── docs/                # Decisões, memórias, diagramas, sessões
 ├── config.json          # Unidades, filtros, API, servidor, bot, agendador
-├── .env.example         # Template do token do bot (copiar para .env)
 └── cursos.json          # Dado extraído (gerado, NUNCA commitado)
 ```
 
@@ -60,7 +58,7 @@ Os processos 2 e 3 rodam **separados**: o bot conversa com a API por HTTP
 npm install
 
 # 2. Token do bot (um com o @BotFather)
-cp .env.example .env        # editar .env e preencher TELEGRAM_TOKEN
+#    criar .env na raiz com: TELEGRAM_TOKEN=<token>  (arquivo gitignored)
 
 # 3. Extrair os dados (cursos + ofertas → cursos.json)
 npm run dados
@@ -187,7 +185,8 @@ permanece registrada em [TECH-01](https://trello.com/b/vNCkaTsu/quis-curso-tem).
 
 ## Documentação adicional
 
-- [`CODIGO.md`](CODIGO.md) — guia do código, arquivo por arquivo
-- [`docs/user-decisions.md`](docs/user-decisions.md) — decisões do grill (Q1–Q19)
-- [`docs/MEMORY.md`](docs/MEMORY.md) — memória do projeto
+- [`docs/memory/ARCHITECTURE.md`](docs/memory/ARCHITECTURE.md) — guia do código + fluxograma
+- [`docs/memory/DECISIONS.md`](docs/memory/DECISIONS.md) — decisões do grill (Q1–Q21)
+- [`docs/memory/STATE.md`](docs/memory/STATE.md) — estado atual do projeto
+- [`docs/memory/RULES.md`](docs/memory/RULES.md) — regras de engenharia
 - [`docs/api_documentacao.md`](docs/api_documentacao.md) — endpoints do Senac
