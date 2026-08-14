@@ -2,7 +2,7 @@
 
 const axios = require('axios');
 const TelegramBot = require('node-telegram-bot-api');
-const CONFIG = require('../config.json');
+const CONFIG = require('../../config.json');
 const {
 	formatarListaCursos,
 	formatarDetalheCurso,

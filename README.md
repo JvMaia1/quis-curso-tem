@@ -5,19 +5,20 @@ Busca bolsas de estudo e cursos livres do Senac SP, agora via **bot do Telegram*
 Consome a API REST interna do portal Senac (Liferay) — sem navegador, sem scraping.
 
 ## Kanban do projeto
+
 - https://trello.com/invite/b/6a6e18b6b11207994c4f4173/ATTI43496975d463750c318d9a724eab32108805D1E5/quis-curso-tem
 
 ## Como o programa funciona (3 processos)
 
-| Processo | Comando | Papel |
-|----------|---------|-------|
-| Extração | `npm run dados` | Consulta a API do Senac e grava `cursos.json` |
-| API Express | `npm run api` | Serve `cursos.json` por HTTP (porta 3000) + agendador diário de extração |
-| Bot Telegram | `npm run bot` | Escuta comandos no Telegram e consulta a API |
+| Processo     | Comando         | Papel                                                                    |
+| ------------ | --------------- | ------------------------------------------------------------------------ |
+| Extração     | `npm run dados` | Consulta a API do Senac e grava `cursos.json`                            |
+| API Express  | `npm run api`   | Serve `cursos.json` por HTTP (porta 3000) + agendador diário de extração |
+| Bot Telegram | `npm run bot`   | Escuta comandos no Telegram e consulta a API                             |
 
-O bot **nunca lê `cursos.json` diretamente** — ele conversa com a API por HTTP
-(axios). O frontend web antigo foi **arquivado** em `legacy/web/` (referência
-não mantida).
+Os processos 2 e 3 rodam **separados**: o bot conversa com a API por HTTP
+(`axios`), nunca lê `cursos.json` diretamente. Se a API cair, o bot avisa
+"API fora do ar".
 
 - **Guia do código**: [`CODIGO.md`](CODIGO.md) — explica cada arquivo em linguagem simples
 - **Fluxograma**: [`docs/fluxo-bot.drawio`](docs/fluxo-bot.drawio) e [`poc-arquitetura.drawio`](poc-arquitetura.drawio)
@@ -26,17 +27,17 @@ não mantida).
 
 - **Extração:** Node.js + Axios (API REST + parse XML)
 - **API:** Express 5 (`scripts/api.js`)
-- **Bot:** `node-telegram-bot-api` (polling) + formatação HTML (`bot/`)
+- **Bot:** `node-telegram-bot-api` (polling) + formatação HTML (`scripts/bot/`)
 - **Dados:** `cursos.json` (JSON estático pré-gerado, gitignored)
 
 ## Estrutura
 
 ```
 .
-├── bot/
-│   ├── bot.js           # Bot Telegram — polling + handlers de comando
-│   └── mensagens.js     # Formatação HTML, preços, datas, botão de inscrição
 ├── scripts/
+│   ├── bot/
+│   │   ├── bot.js           # Bot Telegram — polling + handlers de comando
+│   │   └── mensagens.js     # Formatação HTML, preços, datas, botão de inscrição
 │   ├── api-senac.js     # Cliente HTTP da API Liferay do Senac
 │   ├── ofertas.js       # Parse XML + mapeamento de ofertas (15 campos)
 │   ├── cursos.js        # Orquestrador da extração (gerarCursos, escrita atômica)
@@ -79,13 +80,13 @@ npm run bot
 
 ## Comandos do bot
 
-| Comando | O que faz |
-|---------|-----------|
-| `/start` | Boas-vindas + lista de comandos |
-| `/help` | Lista de comandos |
-| `/unidades` | Unidades atendidas |
-| `/buscar <termo>` | Busca cursos por termo (top 5, com link) |
-| `/disponiveis` | Cursos com inscrições abertas agora |
+| Comando             | O que faz                                                                |
+| ------------------- | ------------------------------------------------------------------------ |
+| `/start`            | Boas-vindas + lista de comandos                                          |
+| `/help`             | Lista de comandos                                                        |
+| `/unidades`         | Unidades atendidas                                                       |
+| `/buscar <termo>`   | Busca cursos por termo (top 5, com link)                                 |
+| `/disponiveis`      | Cursos com inscrições abertas agora                                      |
 | `/curso <codigoFT>` | Detalhes do curso: datas, horários, vagas, preços + botão "Inscrever-se" |
 
 As respostas usam texto HTML (`<b>`, `<a href>`) que o Telegram renderiza no
@@ -100,7 +101,10 @@ app. O botão "Inscrever-se" aparece quando a oferta tem
 {
   "unidades": [
     { "friendlyUrl": "senac-penha", "nome": "Senac Penha" },
-    { "friendlyUrl": "senac-sao-miguel-paulista", "nome": "Senac São Miguel Paulista" }
+    {
+      "friendlyUrl": "senac-sao-miguel-paulista",
+      "nome": "Senac São Miguel Paulista"
+    }
   ],
   "tipoCurso": "Livre",
   "filtros": { "temInscricoesAbertas": true, "temBolsaEstudo": true },
@@ -141,28 +145,34 @@ Detalhes completos em [`docs/api_documentacao.md`](docs/api_documentacao.md).
   "dataExtracao": "2026-08-10T12:40:31.831Z",
   "totalCursos": 170,
   "totalOfertas": 224,
-  "unidades": [{
-    "nome": "Senac Penha",
-    "friendlyUrl": "senac-penha",
-    "totalCursos": 76,
-    "totalOfertas": 104,
-    "cursos": [{
-      "curso": "Excel Avançado",
-      "codigoFT": 21417,
-      "tema": "Tecnologia da Informação",
-      "url": "https://www.sp.senac.br/...",
-      "tags": ["excel", "planilhas"],
-      "ofertas": [{
-        "dataInicio": "2026-09-11",
-        "horarios": "Sex 13h30 às 17h30",
-        "totalVagas": "10",
-        "vagasPSG": "6",
-        "dataAberturaBolsa": "2026-08-22",
-        "precoVenda": "2581",
-        "maxParcelas": "12"
-      }]
-    }]
-  }]
+  "unidades": [
+    {
+      "nome": "Senac Penha",
+      "friendlyUrl": "senac-penha",
+      "totalCursos": 76,
+      "totalOfertas": 104,
+      "cursos": [
+        {
+          "curso": "Excel Avançado",
+          "codigoFT": 21417,
+          "tema": "Tecnologia da Informação",
+          "url": "https://www.sp.senac.br/...",
+          "tags": ["excel", "planilhas"],
+          "ofertas": [
+            {
+              "dataInicio": "2026-09-11",
+              "horarios": "Sex 13h30 às 17h30",
+              "totalVagas": "10",
+              "vagasPSG": "6",
+              "dataAberturaBolsa": "2026-08-22",
+              "precoVenda": "2581",
+              "maxParcelas": "12"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
 ```
 
