@@ -43,9 +43,6 @@ Os processos 2 e 3 rodam **separados**: o bot conversa com a API por HTTP
 │   ├── dados-cursos.js  # Consultas sobre cursos.json (busca, detalhe, disponíveis)
 │   ├── api.js           # API Express (endpoints + agendador diário)
 │   └── todo.js          # Contratos das funções pendentes (gitignored)
-├── legacy/
-│   ├── web/             # Frontend web arquivado (index.html, css, script.js)
-│   └── senac-api.js     # Extrator monolítico (referência)
 ├── docs/                # Decisões, memórias, diagramas, sessões
 ├── config.json          # Unidades, filtros, API, servidor, bot, agendador
 └── cursos.json          # Dado extraído (gerado, NUNCA commitado)

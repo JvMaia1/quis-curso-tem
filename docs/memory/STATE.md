@@ -16,14 +16,14 @@
 - `scripts/api.js`: Express — rotas + agendador diário (03:00 configurável).
 - `scripts/bot/bot.js`: wiring (handlers onText + axios) — IA; `scripts/bot/mensagens.js`: formatação — stubs, corpos = Maia.
 - `scripts/todo.js`: contratos das funções pendentes (gitignored, só existe local).
-- `legacy/web/`: frontend web arquivado (git mv 2026-08-11); `legacy/senac-api.js`: extrator monolítico (referência).
+- Frontend web + extratores antigos: arquivados na branch `legacy` (bkp fora da main).
 - `ARCHITECTURE.md`: guia do código arquivo por arquivo + fluxograma.
 
 ## Current State
 - **Extração (DADOS-01)**: wiring completo (imports, return, paramsSerializer, wrapper, atômico). Corpos pendentes: `parseOfertaXML`, `mapearOfertas`, `mapearOferta` (Maia).
 - **API (API-01)**: endpoints + agendador prontos. Corpos pendentes: `dados-cursos.js` (5 funções, Maia).
 - **Bot (BOT-01/02/03)**: `bot.js` wiring pronto. Corpos pendentes: `mensagens.js` (7 funções, Maia).
-- **Web**: arquivado em `legacy/web/` — regras (formatarData, formatarPreco, disponível = `dataAberturaBolsa <= hoje`, botão inscrição) valem como fonte das regras do bot.
+- **Web**: arquivado na branch `legacy` — regras (formatarData, formatarPreco, disponível = `dataAberturaBolsa <= hoje`, botão inscrição) valem como fonte das regras do bot.
 - **Próximo**: Maia implementa os 12 corpos de `scripts/todo.js`; verificação final (dados reais + curl + Telegram E2E).
 
 ## Architectural Decisions
