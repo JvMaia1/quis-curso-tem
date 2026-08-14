@@ -1,20 +1,40 @@
 'use strict';
+// const fs = require('fs');
+
+const { XMLParser } = require('fast-xml-parser');
+
+const opcoes = {
+	ignoreAttributes: false, // Do not drop XML attributes
+	parseTagValue: false, // Automatically convert inner text values to primitive types
+
+	// 4. Array Enforcement (Force specific tags to always map to an array)
+	isArray: (name, jpath, isLeafNode, isAttribute) => {
+		const arrayTags = ['item', 'user', 'link'];
+		return arrayTags.includes(name);
+	},
+};
+
+const parser = new XMLParser(opcoes);
 
 /** Extrai campos nome/valor do XML de detalhes de uma oferta */
 function parseOfertaXML(xmlString) {
+	return parser.parse(xmlString);
 	/* TODO(MAIA): DADOS-01 — implementar
 	 * Entrada:  xmlString (string XML bruto do campo `content` da oferta)
 	 * Saída:    objeto { nomeCampo: valor }
 	 *
-	 * Três formatos possíveis dentro de <dynamic-element name="...">:
-	 * 1. CDATA direto:    <dynamic-content><![CDATA[valor]]></dynamic-content>
-	 * 2. Option (select): <dynamic-content><option><![CDATA[valor]]></option></dynamic-content>
-	 * 3. Texto puro:      <dynamic-content>valor</dynamic-content>
+	 * Abordagem DEFINIDA (Q20): fast-xml-parser — não usar regex.
+	 * Decisão: docs/user-decisions.md (Q20). Dep instalada: fast-xml-parser 5.10.1.
+	 * Config descoberta (validada com XML real da Senac):
+	 * - CDATA direto cai em `#text` por default; select com <option> cai em `option`
+	 * - parseTagValue: false mantém valores como string (contrato exige string)
+	 * - ignoreAttributes: false expõe o nome do campo em `@_name`
 	 *
 	 * Testes mentais:
 	 * - bloco com CDATA direto → { nomeCampo: 'valor' }
 	 * - bloco select com option CDATA → valor dentro do option
 	 * - conteúdo vazio → campo com string vazia
+	 * - valor numérico (ex: 9900356116) permanece string, não number
 	 */
 }
 
