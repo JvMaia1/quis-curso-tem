@@ -26,7 +26,6 @@ function parseOfertaXML(xmlString) {
 		if(!elemento['dynamic-content']) return;
 		
 		const nomeCampo = elemento['@_field-reference'];
-		
 		const tipoDeDado = elemento['@_type'] === 'select' 
 			? 'option'
 			: '#text' ;
@@ -46,7 +45,6 @@ function parseOfertaXML(xmlString) {
 	return dadosExtraidos;
 };
 
-
 /** Transforma a lista crua de ofertas no shape do contrato */
 function mapearOfertas(ofertasApi) {
 	/* TODO(MAIA): DADOS-01 — implementar
@@ -54,7 +52,7 @@ function mapearOfertas(ofertasApi) {
 	 * Saída:    array de ofertas no shape do contrato (15 campos)
 	 * Implementação sugerida: ofertasApi.map(mapearOferta)
 	 */
-}
+};
 
 /** Mapeia uma oferta para o shape do contrato (15 campos, todos string, `|| ''`) */
 function mapearOferta(detalhes) {
@@ -74,7 +72,7 @@ function mapearOferta(detalhes) {
 	 * - { dataInicioOferta: '01/08/2026' } → { dataInicio: '01/08/2026', dataFim: '', ... }
 	 * - detalhes vazio → todos os 15 campos com ''
 	 */
-}
+};
 
 module.exports = {
 	parseOfertaXML,
