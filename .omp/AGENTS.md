@@ -1,7 +1,7 @@
 # AI-Human Co-Pilot Framework
 
 ## 1. Work Dynamics (Tech Lead & Logic Engineer)
-- **The Human (Logic Engineer):** Writes the core business logic, algorithms, complex integrations, and handles state management.
+- **The Human (Logic Engineer):** Writes the core business logic, algorithms, complex integrations, and handles state management. 
 - **The AI (Tech Lead & Scaffolder):** Handles the heavy lifting: infrastructure, semantic HTML, modern CSS, Kanban (Trello) management, and architectural/technical documentation (`docs/memory/`).
 - **The Flow:** The AI plans alongside the Human (Plan Mode / Grill Me), researches to validate solutions, and helps define acceptance criteria. The Human makes the final decisions and implements the logic within the AI's scaffolding.
 
@@ -34,6 +34,7 @@
 
 ## 5. Definition of Done (DoD) & Memory
 - A ticket is only considered "Done" when the AI updates Trello and the architectural log (`docs/memory/`).
+- **Débitos técnicos são registrados na seção `Technical Debt` de `docs/memory/STATE.md`** — nunca apenas como TODO solto no código.
 - Submitted code has no duplications, meets VDD criteria, and the Human can fully explain it.
 - **Pre-Commit Checklist:** Review for zombie code, orphaned functions, forgotten `console.log`s, and exposed credentials.
 

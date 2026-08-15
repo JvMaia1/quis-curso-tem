@@ -3,14 +3,14 @@
 > **AI INSTRUCTION:** Absolute source of truth for the active project. Read BEFORE any task. Update AFTER any task.
 
 ## Last Update
-2026-08-11 — Reestruturação chatbot: API Express de consulta + bot Telegram + frontend web arquivado (grill Q13–Q19)
+2026-08-15 — parseOfertaXML implementado (DADOS-01 parcial); débito técnico registrado (reduce no parser)
 
 ## Architecture
 - Projeto: bot de busca de bolsas de estudo do Senac-SP — extração via APIs REST, dados em `cursos.json`, servidos por API Express, consumidos por bot Telegram.
 - Branch atual: `main`
 - **3 processos**: extração (`npm run dados` → `scripts/cursos.js`), API (`npm run api` → `scripts/api.js`, porta 3000), bot (`npm run bot` → `scripts/bot/bot.js`, polling).
 - `scripts/api-senac.js`: cliente HTTP (axios, endpoints, IDs Liferay) — `buscarOfertasCurso` corrigida (return/export/`indexes:null`).
-- `scripts/ofertas.js` (novo): `parseOfertaXML`, `mapearOfertas`, `mapearOferta` — stubs, corpos = Maia.
+- `scripts/ofertas.js` (novo): `parseOfertaXML` implementado (fast-xml-parser; campos via `field-reference`; select → string com `' - '`); `mapearOfertas`/`mapearOferta` — stubs, corpos = Maia.
 - `scripts/cursos.js`: orquestrador — `gerarCursos()` exportado, wrapper `{dataExtracao, totalCursos, totalOfertas, unidades}`, escrita atômica.
 - `scripts/dados-cursos.js` (novo): consultas sobre cursos.json (cache mtime) — stubs, corpos = Maia.
 - `scripts/api.js`: Express — rotas + agendador diário (03:00 configurável).
@@ -20,7 +20,7 @@
 - `ARCHITECTURE.md`: guia do código arquivo por arquivo + fluxograma.
 
 ## Current State
-- **Extração (DADOS-01)**: wiring completo (imports, return, paramsSerializer, wrapper, atômico). Corpos pendentes: `parseOfertaXML`, `mapearOfertas`, `mapearOferta` (Maia).
+- **Extração (DADOS-01)**: wiring completo + `parseOfertaXML` implementado (extrai `{campo: valor}` do XML, com ou sem wrapper root; campos vazios descartados). Pendentes: `mapearOfertas`, `mapearOferta` (Maia).
 - **API (API-01)**: endpoints + agendador prontos. Corpos pendentes: `dados-cursos.js` (5 funções, Maia).
 - **Bot (BOT-01/02/03)**: `bot.js` wiring pronto. Corpos pendentes: `mensagens.js` (7 funções, Maia).
 - **Web**: arquivado na branch `legacy` — regras (formatarData, formatarPreco, disponível = `dataAberturaBolsa <= hoje`, botão inscrição) valem como fonte das regras do bot.
@@ -40,6 +40,7 @@ Full documentation and justifications are logged in [`DECISIONS.md`](DECISIONS.m
 
 ## Technical Debt (Tech Debt)
 - Backoff exponencial sem jitter.
+- `parseOfertaXML` (scripts/ofertas.js): refatorar `forEach` → `reduce` — legibilidade/qualidade (registrado 2026-08-15).
 - `/cursos?q=` e `disponiveis=1` mutuamente exclusivos (iteração futura: busca combinada).
 - TECH-01: banco de dados para 50+ unidades (parcialmente endereçado por API-01 — busca server-side real).
 - Agendador roda só com processo da API aberto (deploy local; VPS fica para depois — Q18).
