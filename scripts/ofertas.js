@@ -1,42 +1,51 @@
-'use strict';
+"use strict";
 // const fs = require('fs');
 
-const { XMLParser } = require('fast-xml-parser');
+const { XMLParser } = require("fast-xml-parser");
 
 const opcoes = {
-	ignoreAttributes: false, // Do not drop XML attributes
-	parseTagValue: false, // Automatically convert inner text values to primitive types
-
-	// 4. Array Enforcement (Force specific tags to always map to an array)
-	isArray: (name, jpath, isLeafNode, isAttribute) => {
-		const arrayTags = ['item', 'user', 'link'];
-		return arrayTags.includes(name);
-	},
+  ignoreAttributes: false, // Do not drop XML attributes
+  parseTagValue: false, // Automatically convert inner text values to primitive types
 };
 
 const parser = new XMLParser(opcoes);
 
+
 /** Extrai campos nome/valor do XML de detalhes de uma oferta */
 function parseOfertaXML(xmlString) {
-	return parser.parse(xmlString);
-	/* TODO(MAIA): DADOS-01 — implementar
-	 * Entrada:  xmlString (string XML bruto do campo `content` da oferta)
-	 * Saída:    objeto { nomeCampo: valor }
-	 *
-	 * Abordagem DEFINIDA (Q20): fast-xml-parser — não usar regex.
-	 * Decisão: docs/user-decisions.md (Q20). Dep instalada: fast-xml-parser 5.10.1.
-	 * Config descoberta (validada com XML real da Senac):
-	 * - CDATA direto cai em `#text` por default; select com <option> cai em `option`
-	 * - parseTagValue: false mantém valores como string (contrato exige string)
-	 * - ignoreAttributes: false expõe o nome do campo em `@_name`
-	 *
-	 * Testes mentais:
-	 * - bloco com CDATA direto → { nomeCampo: 'valor' }
-	 * - bloco select com option CDATA → valor dentro do option
-	 * - conteúdo vazio → campo com string vazia
-	 * - valor numérico (ex: 9900356116) permanece string, não number
-	 */
-}
+	const dadosBrutos = parser.parse(xmlString);
+	const dadosExtraidos = {}; // { nomeCampo: valor }
+	const elementos = dadosBrutos["dynamic-element"] ?? dadosBrutos.root?.["dynamic-element"]; // funciona com ou sem wrapper <root>
+
+  	if(!elementos) return {}; //se vier vazio já encerra a função
+
+	const lista = Array.isArray(elementos) ?
+  	elementos : [elementos]; // confirma se é array, se nao for o encapsula em um array
+
+	lista.forEach(elemento => {  
+		if(!elemento['dynamic-content']) return;
+		
+		const nomeCampo = elemento['@_field-reference'];
+		
+		const tipoDeDado = elemento['@_type'] === 'select' 
+			? 'option'
+			: '#text' ;
+		
+		const conteudo = elemento['dynamic-content'][tipoDeDado] ?? elemento['dynamic-content']['#text'];
+
+		if (!nomeCampo || !conteudo) return; //campo ou nomes vazios não entram no resultado
+		dadosExtraidos[nomeCampo] = conteudo;
+
+		if(tipoDeDado === 'option'){
+			dadosExtraidos[nomeCampo] = Array.isArray(dadosExtraidos[nomeCampo]) 
+			? dadosExtraidos[nomeCampo].join(' - ') 
+			: dadosExtraidos[nomeCampo];
+		};
+	});
+
+	return dadosExtraidos;
+};
+
 
 /** Transforma a lista crua de ofertas no shape do contrato */
 function mapearOfertas(ofertasApi) {
