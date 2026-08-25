@@ -13,6 +13,7 @@ const {
 	buscarOfertasCurso,
 } = require('./api-senac');
 const { mapearOfertas } = require('./ofertas');
+const { executarComRetentativa, mostrarLogInicial, mostrarLogFinal } = require('./utilitarios');
 
 // Config ---------------------------------------------------------------------------------------------------
 
@@ -22,45 +23,6 @@ const DRY_RUN = process.argv.includes('--dry-run'); //Guardando escolha do usuar
 // Helpers ---------------------------------------------------------------------------------------------------
 function sleep(ms) {
 	return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-/**Função para poder realizar qoperações de requisição com retry estruturado.
- *
- * @param {function(): Promise<*>} operacao - função assíncrona a ser executada.
- * @param {number} tentativas - numero de tentativas a serem feitas.
- * @param {string} descricao - Texto que descreve a operação.
- * @param {Array<{descricao: string, erro: string}>} falhas Lista de falhas armazenadas no processo
- * @returns {Promise<*|null>} O resultado da operação com sucesso ou null se falhar após os retries.
- */
-async function executarComRetentativa(operacao, tentativas, descricao, falhas) {
-	for (let i = 0; i < tentativas; i++) {
-		try {
-			return await operacao();
-		} catch (err) {
-			// Erros 4xx não adianta retentar, para e avisa o usuário
-			const status = err.response && err.response.status;
-			if (status && status >= 400 && status < 500) {
-				console.error(`  ❌ [${descricao}] erro ${status}: ${err.message}`);
-				falhas.push({ descricao, erro: err.message });
-				return null;
-			}
-
-			if (i < tentativas - 1) {
-				// mostrando retentativas ao usuário
-				const espera = 1000 * Math.pow(2, i);
-				console.log('');
-				console.error(
-					`  ⚠️  [${descricao}] tentativa ${i + 1}/${tentativas} falhou, retry em ${espera / 1000}s: ${err.message}`,
-				);
-				await sleep(espera);
-			} else {
-				console.log('');
-				console.error(`  ❌ [${descricao}] esgotadas ${tentativas} tentativas: ${err.message}`);
-				falhas.push({ descricao, erro: err.message });
-				return null;
-			}
-		}
-	}
 }
 
 /** Processa lista de cursos disponiveis para obter as demais informações das ofertas
@@ -106,7 +68,7 @@ async function extrairCurso(cursos, tema, idUnidade, falhas, unidade) {
 	return cursosProcessados;
 }
 
-/**Busca todos os cursos de um tema com paginação
+/**Busca lista bruta de cursos de um tema com paginação
  *
  * @param {String} idTema id da tema mercadológico
  * @param {String} idTipoCurso id do tipo de curso (livre/técnico)
@@ -182,6 +144,7 @@ async function agruparCursosPorTema(temas, idUnidade, idTipoCurso, falhas) {
 
 	return resultado;
 }
+
 /**Processa todos os cursos de uma unidade, agrupados por tema
  *
  * @param {Array} temas Lista de temas mercadológicos
@@ -191,7 +154,7 @@ async function agruparCursosPorTema(temas, idUnidade, idTipoCurso, falhas) {
  * @param {Array<{descricao: string, erro: string}>} falhas Lista de falhas armazenadas no processo
  * @returns {Array} Lista de cursos processados da unidade
  */
-async function processarCursosDaUnidade(temas, idUnidade, idTipoCurso, unidade, falhas) {
+async function extrairCursosDaUnidade(temas, idUnidade, idTipoCurso, unidade, falhas) {
 	console.log(`\n🏫 ${unidade.nome} (${unidade.friendlyUrl})`);
 
 	console.log(`  ${temas.length} áreas/temas encontradas`);
@@ -236,39 +199,13 @@ async function extrairTodosOsCursos(falhas) {
 
 		if (idUnidade === null) continue;
 
-		const cursos = await processarCursosDaUnidade(temas, idUnidade, idTipoCurso, unidade, falhas);
+		const cursos = await extrairCursosDaUnidade(temas, idUnidade, idTipoCurso, unidade, falhas);
 
 		todosOsCursos.push(...cursos);
 		console.log(`  Total: ${cursos.length} cursos em ${unidade.nome}`);
 	}
 
 	return todosOsCursos;
-}
-
-function mostrarLogInicial() {
-	console.log('quis-curso-tem — Estágio 1: lista de cursos');
-	console.log(`Unidades: ${CONFIG.unidades.map((u) => u.nome).join(', ')}`);
-	console.log(`Tipo: ${CONFIG.tipoCurso}`);
-	if (DRY_RUN) console.log('[dry-run] Nenhum arquivo será escrito.\n');
-}
-
-function mostrarLogFinal(falhas, totalCursos) {
-	// Sumário final
-	console.log(`\n${'='.repeat(50)}`);
-	console.log(`📊 Total: ${totalCursos} cursos em ${CONFIG.unidades.length} unidade(s)`);
-
-	if (falhas.length > 0) {
-		console.log(`\n⚠️  ${falhas.length} falha(s):`);
-		falhas.forEach((f) => console.log(`  - ${f.descricao}: ${f.erro}`));
-	}
-
-	if (!DRY_RUN) {
-		if (totalCursos > 0) {
-			console.log(`📄 cursos.json salvo`);
-		} else {
-			console.log(`⚠️ Nenhum curso extraído — cursos.json anterior mantido`);
-		}
-	}
 }
 
 /** Executa a extração completa e grava o wrapper em cursos.json (escrita atômica).
@@ -281,7 +218,7 @@ function mostrarLogFinal(falhas, totalCursos) {
  * @param {Array<{descricao: string, erro: string}>} [falhas=[]] Acumulador de falhas
  * @returns {Promise<{totalCursos: number, totalOfertas: number, falhas: Array}>} Resumo da extração
  */
-async function gerarCursos(falhas = []) {
+async function gerarJsonCursos(falhas = []) {
 	const cursos = await extrairTodosOsCursos(falhas);
 
 	const unidades = CONFIG.unidades.map((unidade) => {
@@ -325,7 +262,7 @@ if (require.main === module) {
 
 		const falhas = [];
 
-		const { totalCursos } = await gerarCursos(falhas);
+		const { totalCursos } = await gerarJsonCursos(falhas);
 
 		mostrarLogFinal(falhas, totalCursos);
 
@@ -333,4 +270,4 @@ if (require.main === module) {
 	})();
 }
 
-module.exports = { gerarCursos, extrairTodosOsCursos };
+module.exports = { gerarCursos: gerarJsonCursos, extrairTodosOsCursos };
